@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grade 11 Physics: Kinematics review</title>
+<title>Grade 11 Physics (SPH3U) review</title>
 <style>
 :root{
   --turf:#2d6a3e; --turf-deep:#1d4a2b; --turf-wash:#eaf2e8; --line:#d3dfd0;
@@ -186,26 +186,44 @@ details.model summary{font-weight:700;cursor:pointer}
 </style>
 </head>
 <body data-lesson="index" data-title="Index">
+<style>
+.unitnav{position:sticky;top:0;z-index:20;background:var(--turf-deep);border-bottom:3px solid var(--card-yellow)}
+.unitnav .wrap{display:flex;gap:4px;flex-wrap:wrap;padding-top:6px;padding-bottom:0}
+.unitnav a{color:#fff;text-decoration:none;font-weight:700;padding:11px 16px;border-radius:8px 8px 0 0;font-size:.98rem;min-height:44px;box-sizing:border-box}
+.unitnav a:hover,.unitnav a:focus-visible{background:var(--turf);outline:none;box-shadow:inset 0 -4px 0 var(--card-yellow)}
+.unitnav a.on{background:var(--paper);color:var(--turf-deep)}
+.unit{scroll-margin-top:64px}
+.unit h2{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.unit h2 .tag{font-size:.8rem;font-weight:700;background:var(--yellow-wash);border:1px solid var(--card-yellow);color:var(--ink);border-radius:999px;padding:2px 10px}
+.unit h3{margin:1.4em 0 .3em;color:var(--turf-deep)}
+.unit .blurb{color:var(--ink-soft);margin-top:0}
+.lesson-list li.soon{opacity:.7}
+@media (max-width:520px){.unitnav a{padding:10px 10px;font-size:.9rem}}
+</style>
 <header class="hero"><div class="wrap">
   <div>
-    <h1>Grade 11 Physics: Kinematics review</h1>
+    <h1>Grade 11 Physics (SPH3U) review</h1>
     <p class="lede">Short lessons that explain each idea in plain language, show worked examples, and check your understanding as you go. They go alongside your Google Classroom work.</p>
   </div>
 </div></header>
+<nav class="unitnav" aria-label="Sections"><div class="wrap">
+  <a href="#start">Start here</a>
+  <a href="#unit1">Unit 1: Kinematics</a>
+  <a href="#unit2">Unit 2: Forces</a>
+  <a href="#unit3">Unit 3: Energy</a>
+</div></nav>
 <main>
-<section class="play"><div class="wrap">
-  <h2>How to use these lessons</h2>
+<section class="play unit" id="start"><div class="wrap">
+  <h2>Start here</h2>
   <ol>
-    <li>Open the lesson and read the part, then try the activity or example before you reveal the answer.</li>
+    <li>Pick your unit in the bar at the top, then open the next lesson in order.</li>
+    <li>Read each part, then try the activity or example before you reveal the answer.</li>
     <li>Do the knowledge check. Read the feedback on wrong answers, because it explains what went wrong.</li>
     <li>Do the matching <b>Google Classroom</b> practice the lesson points you to.</li>
     <li>Rate yourself at the end. Your results are saved for your parent to see.</li>
   </ol>
   <p>Work for about an hour a day. If you get stuck for more than ten minutes, mark the question and move on.</p>
-</div></section>
-
-<section class="play"><div class="wrap">
-  <h2>The routine for every problem</h2>
+  <h3>The routine for every problem</h3>
   <p>Most lost marks in physics come from jumping straight to an equation. Use the same steps every time:</p>
   <div class="we">
     <p><b>Sketch</b> it, and choose which direction is positive.</p>
@@ -217,25 +235,60 @@ details.model summary{font-weight:700;cursor:pointer}
   </div>
 </div></section>
 
-<section class="play"><div class="wrap">
-  <h2>Lessons</h2>
+<section class="play unit" id="unit1"><div class="wrap">
+  <h2>Unit 1: Kinematics <span class="tag">12 lessons, 0 to 11</span></h2>
+  <p class="blurb">Describing motion with graphs, equations, vectors and projectiles, plus the two Vernier labs. Lesson 11 is the practice test for the whole unit.</p>
+  <h3>Getting ready</h3>
   <ul class="lesson-list">
     <li><div class="jn">0</div><div><a href="lesson-0-warm-up.html">Warm-up: units, scientific notation, sig digits, rearranging</a><small>About 60 minutes</small></div></li>
     <li><div class="jn">1</div><div><a href="lesson-1-scalars-and-vectors.html">Scalars and vectors</a><small>Distance, displacement, speed, velocity, signs. About 60 minutes</small></div></li>
+  </ul>
+  <h3>Motion graphs</h3>
+  <ul class="lesson-list">
     <li><div class="jn">2</div><div><a href="lesson-2-position-time-graphs.html">Position-time graphs</a><small>Reading the shape, slope as velocity. About 60 minutes</small></div></li>
     <li><div class="jn">3</div><div><a href="lesson-3-velocity-time-graphs.html">Velocity-time graphs</a><small>Slope as acceleration, area as displacement. About 60 minutes</small></div></li>
     <li><div class="jn">4</div><div><a href="lesson-4-instantaneous-velocity.html">Instantaneous velocity</a><small>Tangent lines on curves. About 60 minutes</small></div></li>
+  </ul>
+  <h3>Acceleration and the equations</h3>
+  <ul class="lesson-list">
     <li><div class="jn">5</div><div><a href="lesson-5-acceleration.html">Acceleration</a><small>Signs, units, acceleration on graphs. About 60 minutes</small></div></li>
     <li><div class="jn">6</div><div><a href="lesson-6-the-big-five.html">The Big Five equations</a><small>Choosing the right equation. About 75 minutes</small></div></li>
     <li><div class="jn">7</div><div><a href="lesson-7-gravity-and-free-fall.html">Gravity and free fall</a><small>Up-and-down problems. About 60 minutes</small></div></li>
+  </ul>
+  <h3>Two dimensions</h3>
+  <ul class="lesson-list">
     <li><div class="jn">8</div><div><a href="lesson-8-2d-vectors.html">2-D vectors</a><small>Components and adding vectors. About 60 minutes</small></div></li>
     <li><div class="jn">9</div><div><a href="lesson-9-projectile-motion.html">Projectile motion</a><small>Two motions, one clock. About 75 minutes</small></div></li>
+  </ul>
+  <h3>Labs and review</h3>
+  <ul class="lesson-list">
     <li><div class="jn">10</div><div><a href="lesson-10-labs.html">Lab skills: the two Vernier labs</a><small>Graph shapes, percent difference, discussion answers. About 60 minutes</small></div></li>
     <li><div class="jn">11</div><div><a href="lesson-11-review.html">Review and practice test</a><small>Mixed practice with hidden topic tags. About 90 minutes</small></div></li>
   </ul>
 </div></section>
+
+<section class="play unit" id="unit2"><div class="wrap">
+  <h2>Unit 2: Forces <span class="tag">In progress</span></h2>
+  <p class="blurb">Newton&rsquo;s laws, free body diagrams, the normal force and F = ma. These lessons will open here as soon as the whole unit is ready.</p>
+  <ul class="lesson-list">
+    <li class="soon"><div class="jn">12</div><div>Newton&rsquo;s first law<small>Inertia and balanced forces. About 60 minutes &middot; Coming soon</small></div></li>
+    <li class="soon"><div class="jn">13</div><div>Free body diagrams<small>Every force on one picture. About 75 minutes &middot; Coming soon</small></div></li>
+    <li class="soon"><div class="jn">14</div><div>The normal force<small>Surfaces, scales and angled forces. About 75 minutes &middot; Coming soon</small></div></li>
+    <li class="soon"><div class="jn">15</div><div>Newton&rsquo;s second law<small>F = ma with ropes, friction and elevators. About 90 minutes &middot; Coming soon</small></div></li>
+  </ul>
+</div></section>
+
+<section class="play unit" id="unit3"><div class="wrap">
+  <h2>Unit 3: Energy <span class="tag">Coming soon</span></h2>
+  <p class="blurb">Work, energy and power. Lessons will be added after Forces.</p>
+</div></section>
 </main>
 <footer><div class="wrap"><p>These lessons support, and do not replace, the material from your teacher. Your progress is saved in this browser. When online saving is switched on, type your name in the yellow bar at the top of a lesson to keep it safe and use it on any device.</p></div></footer>
+<script>
+(function(){var links=[].slice.call(document.querySelectorAll('.unitnav a'));var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+function upd(){var y=window.scrollY+120,k=0;secs.forEach(function(s,i){if(s&&s.offsetTop<=y)k=i});links.forEach(function(a,i){a.classList.toggle('on',i===k)})}
+window.addEventListener('scroll',upd,{passive:true});upd();})();
+</script>
 
 <script>
 
