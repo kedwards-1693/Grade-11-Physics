@@ -49,7 +49,11 @@ sup,sub{line-height:0}
 .pitch .pitch-mark:hover{background:var(--turf)}
 .pitch .pitch-mark.on{background:var(--card-yellow);border-color:var(--card-yellow)}
 .pitch-ball{position:absolute;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#16221b 0 28%,#fff 30%);border:2px solid #16221b;pointer-events:none;transition:left .7s cubic-bezier(.3,.7,.2,1)}
-.pitch-label{color:#e4f0e2;font-size:.82rem;margin:4px 0 0;max-width:none}
+.pitch-label{color:#e4f0e2;font-size:.9rem;margin:4px 0 0;max-width:none;font-weight:600}
+.pitch-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.showall-btn{background:transparent;color:#fff;border:1px solid #9fc3a5;border-radius:999px;padding:4px 12px;min-height:32px;font-size:.8rem;cursor:pointer;margin-top:4px}
+.showall-btn:hover{background:var(--turf)}
+.pitch .pitch-mark.cur{box-shadow:0 0 0 3px rgba(244,194,13,.55)}
 @media (prefers-reduced-motion:reduce){.pitch-ball{transition:none}}
 
 /* sections */
@@ -183,22 +187,69 @@ details.model summary{font-weight:700;cursor:pointer}
 .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;max-width:100%;margin:10px 0}
 .figrow .fig{margin:0}
 
+/* one part at a time */
+.play[data-track]{scroll-margin-top:96px}
+.play.locked{display:none}
+.play.collapsed .wrap>*:not(h2):not(.reopen){display:none}
+.play.collapsed{padding:12px 0;background:#f6f9f5}
+.play.collapsed>.wrap>h2{margin:0;font-size:1.05rem;color:var(--ink-soft)}
+.play .reopen{display:none}
+.play.collapsed .reopen{display:inline-block;margin:6px 0 0 46px;background:#fff;color:var(--turf-deep);border:1px solid var(--line);border-radius:999px;padding:4px 12px;min-height:32px;font-size:.82rem;cursor:pointer}
+.play.current{box-shadow:inset 6px 0 0 var(--card-yellow);background:linear-gradient(#fff,#fff)}
+.play.current .done-btn{font-size:1.05rem;padding:12px 20px}
+@media (prefers-reduced-motion:no-preference){.play.current{animation:partin .35s ease-out}@keyframes partin{from{opacity:.4}to{opacity:1}}}
+
+.backlink{color:#fff;font-size:.85rem;font-weight:700;text-decoration:none;border:1px solid #9fc3a5;border-radius:999px;padding:4px 12px;min-height:32px;display:inline-flex;align-items:center;margin-top:4px}
+.backlink:hover{background:var(--turf)}
+
 </style>
 </head>
 <body data-lesson="index" data-title="Index">
 <style>
-.unitnav{position:sticky;top:0;z-index:20;background:var(--turf-deep);border-bottom:3px solid var(--card-yellow)}
-.unitnav .wrap{display:flex;gap:4px;flex-wrap:wrap;padding-top:6px;padding-bottom:0}
-.unitnav a{color:#fff;text-decoration:none;font-weight:700;padding:11px 16px;border-radius:8px 8px 0 0;font-size:.98rem;min-height:44px;box-sizing:border-box}
-.unitnav a:hover,.unitnav a:focus-visible{background:var(--turf);outline:none;box-shadow:inset 0 -4px 0 var(--card-yellow)}
-.unitnav a.on{background:var(--paper);color:var(--turf-deep)}
-.unit{scroll-margin-top:64px}
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);align-items:start}
+.side{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;background:var(--turf-deep);color:#fff;padding:18px 14px 28px;border-right:4px solid var(--card-yellow)}
+.side a{color:#fff;text-decoration:none}
+.side .brand{font-weight:800;font-size:1.05rem;margin:0 0 10px}
+.overall{margin:0 0 16px}
+.overall .ot{font-size:.85rem;margin:0 0 4px;color:#e4f0e2}
+.obar,.ubar{height:10px;background:#16341f;border-radius:999px;overflow:hidden;border:1px solid #6e9a79}
+.obar i,.ubar i{display:block;height:100%;width:0;background:var(--card-yellow);transition:width .4s}
+.side .su{margin:14px 0 0}
+.side .suh{display:flex;justify-content:space-between;gap:8px;font-weight:800;padding:8px 8px;border-radius:8px;background:var(--turf)}
+.side .suh:hover,.side .suh:focus-visible{outline:2px solid var(--card-yellow)}
+.side .sup{font-weight:600;font-size:.8rem;color:#e4f0e2}
+.side ul{list-style:none;margin:6px 0 0;padding:0}
+.side .sl li a{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;font-size:.92rem;min-height:36px}
+.side .sl li a:hover,.side .sl li a:focus-visible{background:var(--turf);outline:none}
+.dot{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid #9fc3a5;background:transparent;position:relative}
+.sl li.prog .dot{border-color:var(--card-yellow);background:linear-gradient(90deg,var(--card-yellow) 50%,transparent 50%)}
+.sl li.done .dot{background:var(--card-yellow);border-color:var(--card-yellow)}
+.sl li.done .dot::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid var(--turf-deep);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.sl li.done .st{color:#d9ecd6}
+.side .soonu{margin:14px 0 0;padding:8px;border-radius:8px;border:1px dashed #6e9a79;font-size:.9rem;color:#cfe3cf}
+.nameblock{margin:0 0 14px;padding:10px;border-radius:10px;background:#16341f;font-size:.82rem}
+.nameblock label{display:block;margin:0 0 4px}
+.nameblock input{width:100%;box-sizing:border-box;min-height:36px;padding:4px 8px;border-radius:6px;border:1px solid #6e9a79;font-size:.95rem}
+.nameblock button{margin-top:6px;min-height:34px;border-radius:999px;border:0;background:var(--card-yellow);color:var(--ink);font-weight:700;padding:4px 14px;cursor:pointer}
+.nameblock .nst{margin:6px 0 0;color:#cfe3cf}
+.menubtn{display:none}
+.unit{scroll-margin-top:16px}
 .unit h2{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .unit h2 .tag{font-size:.8rem;font-weight:700;background:var(--yellow-wash);border:1px solid var(--card-yellow);color:var(--ink);border-radius:999px;padding:2px 10px}
 .unit h3{margin:1.4em 0 .3em;color:var(--turf-deep)}
 .unit .blurb{color:var(--ink-soft);margin-top:0}
 .lesson-list li.soon{opacity:.7}
-@media (max-width:520px){.unitnav a{padding:10px 10px;font-size:.9rem}}
+.lstat{display:block;margin-top:4px;font-size:.82rem;font-weight:700;color:var(--ink-soft)}
+.lesson-list li.done .lstat{color:var(--good)}
+.lbar{display:block;height:6px;border-radius:999px;background:var(--line);margin-top:4px;overflow:hidden;max-width:260px}
+.lbar i{display:block;height:100%;width:0;background:var(--turf);transition:width .4s}
+.lesson-list li.done .lbar i{background:var(--card-yellow)}
+@media (max-width:900px){
+  .layout{display:block}
+  .menubtn{display:flex;position:sticky;top:0;z-index:30;width:100%;justify-content:space-between;align-items:center;background:var(--turf-deep);color:#fff;border:0;border-bottom:3px solid var(--card-yellow);padding:12px 16px;min-height:48px;font-size:1rem;font-weight:700;cursor:pointer}
+  .side{display:none;position:fixed;top:48px;left:0;right:0;bottom:0;z-index:25;max-height:none;border-right:0}
+  body.menu-open .side{display:block}
+}
 </style>
 <header class="hero"><div class="wrap">
   <div>
@@ -206,23 +257,58 @@ details.model summary{font-weight:700;cursor:pointer}
     <p class="lede">Short lessons that explain each idea in plain language, show worked examples, and check your understanding as you go. They go alongside your Google Classroom work.</p>
   </div>
 </div></header>
-<nav class="unitnav" aria-label="Sections"><div class="wrap">
-  <a href="#start">Start here</a>
-  <a href="#unit1">Unit 1: Kinematics</a>
-  <a href="#unit2">Unit 2: Forces</a>
-  <a href="#unit3">Unit 3: Energy</a>
-</div></nav>
+<button class="menubtn" type="button" id="menubtn" aria-expanded="false" aria-controls="side"><span>Menu and my progress</span><span id="menupct"></span></button>
+<div class="layout">
+<nav class="side" id="side" aria-label="Lessons and progress">
+  <p class="brand">My progress</p>
+  <div class="overall"><p class="ot" id="ot">0 of 0 parts finished</p><div class="obar"><i id="oi"></i></div></div>
+  <div class="nameblock" id="nameblock" hidden>
+    <label for="nm">Your name (the same one you use in the lessons)</label>
+    <input id="nm" autocomplete="off" maxlength="20">
+    <button type="button" id="nmgo">Load my progress</button>
+    <p class="nst" id="nst"></p>
+  </div>
+  <a class="suh" href="#start" style="margin-bottom:0">Start here</a>
+    <div class="su" data-u="0,1,2,3,4,5,6,7,8,9,10,11"><a class="suh" href="#unit1">Unit 1: Kinematics<span class="sup"></span></a>
+      <ul class="sl">
+      <li data-l="0"><a href="lesson-0-warm-up.html"><span class="dot" aria-hidden="true"></span><span class="st">Warm-up</span></a></li>
+      <li data-l="1"><a href="lesson-1-scalars-and-vectors.html"><span class="dot" aria-hidden="true"></span><span class="st">Scalars and vectors</span></a></li>
+      <li data-l="2"><a href="lesson-2-position-time-graphs.html"><span class="dot" aria-hidden="true"></span><span class="st">Position-time graphs</span></a></li>
+      <li data-l="3"><a href="lesson-3-velocity-time-graphs.html"><span class="dot" aria-hidden="true"></span><span class="st">Velocity-time graphs</span></a></li>
+      <li data-l="4"><a href="lesson-4-instantaneous-velocity.html"><span class="dot" aria-hidden="true"></span><span class="st">Instantaneous velocity</span></a></li>
+      <li data-l="5"><a href="lesson-5-acceleration.html"><span class="dot" aria-hidden="true"></span><span class="st">Acceleration</span></a></li>
+      <li data-l="6"><a href="lesson-6-the-big-five.html"><span class="dot" aria-hidden="true"></span><span class="st">The Big Five equations</span></a></li>
+      <li data-l="7"><a href="lesson-7-gravity-and-free-fall.html"><span class="dot" aria-hidden="true"></span><span class="st">Gravity and free fall</span></a></li>
+      <li data-l="8"><a href="lesson-8-2d-vectors.html"><span class="dot" aria-hidden="true"></span><span class="st">2-D vectors</span></a></li>
+      <li data-l="9"><a href="lesson-9-projectile-motion.html"><span class="dot" aria-hidden="true"></span><span class="st">Projectile motion</span></a></li>
+      <li data-l="10"><a href="lesson-10-labs.html"><span class="dot" aria-hidden="true"></span><span class="st">Lab skills</span></a></li>
+      <li data-l="11"><a href="lesson-11-review.html"><span class="dot" aria-hidden="true"></span><span class="st">Review and practice test</span></a></li>
+      </ul></div>
+    <div class="su" data-u="12,13,14,15,16,17,18,19"><a class="suh" href="#unit2">Unit 2: Forces<span class="sup"></span></a>
+      <ul class="sl">
+      <li data-l="12"><a href="lesson-12-newtons-first-law.html"><span class="dot" aria-hidden="true"></span><span class="st">Newton’s first law</span></a></li>
+      <li data-l="13"><a href="lesson-13-free-body-diagrams.html"><span class="dot" aria-hidden="true"></span><span class="st">Free body diagrams</span></a></li>
+      <li data-l="14"><a href="lesson-14-the-normal-force.html"><span class="dot" aria-hidden="true"></span><span class="st">The normal force</span></a></li>
+      <li data-l="15"><a href="lesson-15-newtons-second-law.html"><span class="dot" aria-hidden="true"></span><span class="st">Newton’s second law</span></a></li>
+      <li data-l="16"><a href="lesson-16-newtons-third-law.html"><span class="dot" aria-hidden="true"></span><span class="st">Newton’s third law</span></a></li>
+      <li data-l="17"><a href="lesson-17-universal-gravitation.html"><span class="dot" aria-hidden="true"></span><span class="st">Universal gravitation</span></a></li>
+      <li data-l="18"><a href="lesson-18-friction-lab.html"><span class="dot" aria-hidden="true"></span><span class="st">Friction and the friction lab</span></a></li>
+      <li data-l="19"><a href="lesson-19-forces-review.html"><span class="dot" aria-hidden="true"></span><span class="st">Forces review and practice test</span></a></li>
+      </ul></div>
+  <div class="soonu"><b>Unit 3: Energy</b><br>Coming soon</div>
+</nav>
+<div class="content">
 <main>
 <section class="play unit" id="start"><div class="wrap">
   <h2>Start here</h2>
   <ol>
-    <li>Pick your unit in the bar at the top, then open the next lesson in order.</li>
-    <li>Read each part, then try the activity or example before you reveal the answer.</li>
-    <li>Do the knowledge check. Read the feedback on wrong answers, because it explains what went wrong.</li>
+    <li>Pick a lesson from the menu on the left and work through them in order.</li>
+    <li>Each lesson shows <b>one part at a time</b>. Read it, try the activity, then press <b>I finished this part</b> to open the next one.</li>
+    <li>Do the knowledge checks. Read the feedback on wrong answers, because it explains what went wrong.</li>
     <li>Do the matching <b>Google Classroom</b> practice the lesson points you to.</li>
     <li>Rate yourself at the end. Your results are saved for your parent to see.</li>
   </ol>
-  <p>Work for about an hour a day. If you get stuck for more than ten minutes, mark the question and move on.</p>
+  <p>Work for about an hour a day. If you get stuck for more than ten minutes, mark the question and move on. The menu shows a filled dot for each lesson you have finished.</p>
   <h3>The routine for every problem</h3>
   <p>Most lost marks in physics come from jumping straight to an equation. Use the same steps every time:</p>
   <div class="we">
@@ -240,30 +326,30 @@ details.model summary{font-weight:700;cursor:pointer}
   <p class="blurb">Describing motion with graphs, equations, vectors and projectiles, plus the two Vernier labs. Lesson 11 is the practice test for the whole unit.</p>
   <h3>Math warm-up and motion basics</h3>
   <ul class="lesson-list">
-    <li><div class="jn">0</div><div><a href="lesson-0-warm-up.html">Warm-up: units, scientific notation, sig digits, rearranging</a><small>About 60 minutes</small></div></li>
-    <li><div class="jn">1</div><div><a href="lesson-1-scalars-and-vectors.html">Scalars and vectors</a><small>Distance, displacement, speed, velocity, signs. About 60 minutes</small></div></li>
+    <li data-l="0"><div class="jn">0</div><div><a href="lesson-0-warm-up.html">Warm-up: units, scientific notation, sig digits, rearranging</a><small>About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="1"><div class="jn">1</div><div><a href="lesson-1-scalars-and-vectors.html">Scalars and vectors</a><small>Distance, displacement, speed, velocity, signs. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Motion graphs</h3>
   <ul class="lesson-list">
-    <li><div class="jn">2</div><div><a href="lesson-2-position-time-graphs.html">Position-time graphs</a><small>Reading the shape, slope as velocity. About 60 minutes</small></div></li>
-    <li><div class="jn">3</div><div><a href="lesson-3-velocity-time-graphs.html">Velocity-time graphs</a><small>Slope as acceleration, area as displacement. About 60 minutes</small></div></li>
-    <li><div class="jn">4</div><div><a href="lesson-4-instantaneous-velocity.html">Instantaneous velocity</a><small>Tangent lines on curves. About 60 minutes</small></div></li>
+    <li data-l="2"><div class="jn">2</div><div><a href="lesson-2-position-time-graphs.html">Position-time graphs</a><small>Reading the shape, slope as velocity. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="3"><div class="jn">3</div><div><a href="lesson-3-velocity-time-graphs.html">Velocity-time graphs</a><small>Slope as acceleration, area as displacement. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="4"><div class="jn">4</div><div><a href="lesson-4-instantaneous-velocity.html">Instantaneous velocity</a><small>Tangent lines on curves. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Acceleration, equations and free fall</h3>
   <ul class="lesson-list">
-    <li><div class="jn">5</div><div><a href="lesson-5-acceleration.html">Acceleration</a><small>Signs, units, acceleration on graphs. About 60 minutes</small></div></li>
-    <li><div class="jn">6</div><div><a href="lesson-6-the-big-five.html">The Big Five equations</a><small>Choosing the right equation. About 75 minutes</small></div></li>
-    <li><div class="jn">7</div><div><a href="lesson-7-gravity-and-free-fall.html">Gravity and free fall</a><small>Up-and-down problems. About 60 minutes</small></div></li>
+    <li data-l="5"><div class="jn">5</div><div><a href="lesson-5-acceleration.html">Acceleration</a><small>Signs, units, acceleration on graphs. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="6"><div class="jn">6</div><div><a href="lesson-6-the-big-five.html">The Big Five equations</a><small>Choosing the right equation. About 75 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="7"><div class="jn">7</div><div><a href="lesson-7-gravity-and-free-fall.html">Gravity and free fall</a><small>Up-and-down problems. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Motion in two dimensions</h3>
   <ul class="lesson-list">
-    <li><div class="jn">8</div><div><a href="lesson-8-2d-vectors.html">2-D vectors</a><small>Components and adding vectors. About 60 minutes</small></div></li>
-    <li><div class="jn">9</div><div><a href="lesson-9-projectile-motion.html">Projectile motion</a><small>Two motions, one clock. About 75 minutes</small></div></li>
+    <li data-l="8"><div class="jn">8</div><div><a href="lesson-8-2d-vectors.html">2-D vectors</a><small>Components and adding vectors. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="9"><div class="jn">9</div><div><a href="lesson-9-projectile-motion.html">Projectile motion</a><small>Two motions, one clock. About 75 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Labs and practice test</h3>
   <ul class="lesson-list">
-    <li><div class="jn">10</div><div><a href="lesson-10-labs.html">Lab skills: the two Vernier labs</a><small>Graph shapes, percent difference, discussion answers. About 60 minutes</small></div></li>
-    <li><div class="jn">11</div><div><a href="lesson-11-review.html">Review and practice test</a><small>Mixed practice with hidden topic tags. About 90 minutes</small></div></li>
+    <li data-l="10"><div class="jn">10</div><div><a href="lesson-10-labs.html">Lab skills: the two Vernier labs</a><small>Graph shapes, percent difference, discussion answers. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="11"><div class="jn">11</div><div><a href="lesson-11-review.html">Review and practice test</a><small>Mixed practice with hidden topic tags. About 90 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
 </div></section>
 
@@ -272,23 +358,23 @@ details.model summary{font-weight:700;cursor:pointer}
   <p class="blurb">Newton&rsquo;s three laws, free body diagrams, the normal force, gravitation and friction. Lesson 19 is the practice test for the whole unit.</p>
   <h3>First law and free body diagrams</h3>
   <ul class="lesson-list">
-    <li><div class="jn">12</div><div><a href="lesson-12-newtons-first-law.html">Newton&rsquo;s first law</a><small>Inertia and balanced forces. About 60 minutes</small></div></li>
-    <li><div class="jn">13</div><div><a href="lesson-13-free-body-diagrams.html">Free body diagrams</a><small>Every force on one picture. About 75 minutes</small></div></li>
-    <li><div class="jn">14</div><div><a href="lesson-14-the-normal-force.html">The normal force</a><small>Surfaces, scales and angled forces. About 75 minutes</small></div></li>
+    <li data-l="12"><div class="jn">12</div><div><a href="lesson-12-newtons-first-law.html">Newton&rsquo;s first law</a><small>Inertia and balanced forces. About 60 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="13"><div class="jn">13</div><div><a href="lesson-13-free-body-diagrams.html">Free body diagrams</a><small>Every force on one picture. About 75 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="14"><div class="jn">14</div><div><a href="lesson-14-the-normal-force.html">The normal force</a><small>Surfaces, scales and angled forces. About 75 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Second and third laws</h3>
   <ul class="lesson-list">
-    <li><div class="jn">15</div><div><a href="lesson-15-newtons-second-law.html">Newton&rsquo;s second law</a><small>F = ma with ropes, friction and elevators. About 90 minutes</small></div></li>
-    <li><div class="jn">16</div><div><a href="lesson-16-newtons-third-law.html">Newton&rsquo;s third law</a><small>Force pairs and why they never cancel. About 90 minutes</small></div></li>
+    <li data-l="15"><div class="jn">15</div><div><a href="lesson-15-newtons-second-law.html">Newton&rsquo;s second law</a><small>F = ma with ropes, friction and elevators. About 90 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="16"><div class="jn">16</div><div><a href="lesson-16-newtons-third-law.html">Newton&rsquo;s third law</a><small>Force pairs and why they never cancel. About 90 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Gravity and friction</h3>
   <ul class="lesson-list">
-    <li><div class="jn">17</div><div><a href="lesson-17-universal-gravitation.html">Universal gravitation</a><small>Gravity between masses, g on planets, weightlessness. About 90 minutes</small></div></li>
-    <li><div class="jn">18</div><div><a href="lesson-18-friction-lab.html">Friction and the friction lab</a><small>Static and kinetic friction, graph and slope, the write-up. About 75 minutes</small></div></li>
+    <li data-l="17"><div class="jn">17</div><div><a href="lesson-17-universal-gravitation.html">Universal gravitation</a><small>Gravity between masses, g on planets, weightlessness. About 90 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
+    <li data-l="18"><div class="jn">18</div><div><a href="lesson-18-friction-lab.html">Friction and the friction lab</a><small>Static and kinetic friction, graph and slope, the write-up. About 75 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
   <h3>Review</h3>
   <ul class="lesson-list">
-    <li><div class="jn">19</div><div><a href="lesson-19-forces-review.html">Forces review and practice test</a><small>Mixed practice with hidden topic tags. About 90 minutes</small></div></li>
+    <li data-l="19"><div class="jn">19</div><div><a href="lesson-19-forces-review.html">Forces review and practice test</a><small>Mixed practice with hidden topic tags. About 90 minutes</small><span class="lstat" aria-live="polite"></span><span class="lbar"><i></i></span></div></li>
   </ul>
 </div></section>
 
@@ -297,15 +383,67 @@ details.model summary{font-weight:700;cursor:pointer}
   <p class="blurb">Work, energy and power. Lessons will be added after Forces.</p>
 </div></section>
 </main>
-<footer><div class="wrap"><p>These lessons support, and do not replace, the material from your teacher. Your progress is saved in this browser. When online saving is switched on, type your name in the yellow bar at the top of a lesson to keep it safe and use it on any device.</p></div></footer>
+<footer><div class="wrap"><p>These lessons support, and do not replace, the material from your teacher. Your progress is saved in this browser. To keep it safe and use it on any device, type your name in the yellow bar at the top of a lesson, or in the menu on this page.</p></div></footer>
+</div>
+</div>
 <script>
-(function(){var links=[].slice.call(document.querySelectorAll('.unitnav a'));var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
-function upd(){var y=window.scrollY+120,k=0;secs.forEach(function(s,i){if(s&&s.offsetTop<=y)k=i});links.forEach(function(a,i){a.classList.toggle('on',i===k)})}
-window.addEventListener('scroll',upd,{passive:true});upd();})();
+(function(){
+var SECS={"0": 9, "1": 8, "2": 8, "3": 8, "4": 7, "5": 9, "6": 8, "7": 8, "8": 8, "9": 9, "10": 7, "11": 9, "12": 8, "13": 7, "14": 8, "15": 10, "16": 8, "17": 8, "18": 7, "19": 8};
+var CFG=window.SPH_CONFIG||{};var NAMEKEY='sph3u-kin-name';
+function ls(k){try{return window.localStorage.getItem(k);}catch(e){return null;}}
+function done(n){var raw=ls('sph3u-kin-l'+n);if(!raw)return 0;try{var o=JSON.parse(raw),c=0;Object.keys(o.d||{}).forEach(function(k){if(/^s\d+$/.test(k)&&o.d[k]===true)c++;});return Math.min(c,SECS[n]);}catch(e){return 0;}}
+function paint(){
+  var tot=0,got=0;
+  document.querySelectorAll('.lesson-list li[data-l]').forEach(function(li){
+    var n=li.getAttribute('data-l'),d=done(n),t=SECS[n];tot+=t;got+=d;
+    li.classList.toggle('done',d>=t);
+    li.querySelector('.lstat').textContent=d>=t?'Finished':(d>0?d+' of '+t+' parts finished':'Not started');
+    li.querySelector('.lbar i').style.width=(100*d/t)+'%';
+  });
+  document.querySelectorAll('.sl li[data-l]').forEach(function(li){
+    var n=li.getAttribute('data-l'),d=done(n),t=SECS[n];
+    li.classList.toggle('done',d>=t);li.classList.toggle('prog',d>0&&d<t);
+    li.querySelector('a').setAttribute('title',d>=t?'Finished':(d>0?d+' of '+t+' parts finished':'Not started'));
+  });
+  document.querySelectorAll('.su').forEach(function(u){
+    var ids=u.getAttribute('data-u').split(','),fin=0;ids.forEach(function(n){if(done(n)>=SECS[n])fin++;});
+    u.querySelector('.sup').textContent=fin+' of '+ids.length;
+  });
+  document.getElementById('ot').textContent=got+' of '+tot+' parts finished';
+  document.getElementById('oi').style.width=(tot?100*got/tot:0)+'%';
+  document.getElementById('menupct').textContent=Math.round(tot?100*got/tot:0)+'% done';
+}
+paint();
+var mb=document.getElementById('menubtn');
+mb.addEventListener('click',function(){var o=document.body.classList.toggle('menu-open');mb.setAttribute('aria-expanded',o?'true':'false');if(o)window.scrollTo(0,mb.offsetTop);});
+document.getElementById('side').addEventListener('click',function(e){if(e.target.closest('a[href^="#"]'))document.body.classList.remove('menu-open');});
+/* online progress */
+if(CFG.url&&CFG.key){
+  var nb=document.getElementById('nameblock'),inp=document.getElementById('nm'),st=document.getElementById('nst');nb.hidden=false;
+  inp.value=ls(NAMEKEY)||'';
+  function clean(v){return String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,20);}
+  function call(p){var u=CFG.url+(CFG.url.indexOf('?')>=0?'&':'?')+Object.keys(p).map(function(k){return k+'='+encodeURIComponent(p[k]);}).join('&');return fetch(u).then(function(r){return r.json();}).then(function(j){if(!j||!j.ok)throw new Error('bad');return j;});}
+  function pull(name){
+    st.textContent='Loading…';var n=0,jobs=[];
+    Object.keys(SECS).forEach(function(id){
+      jobs.push(call({action:'get',key:CFG.key,name:name,lesson:'l'+id}).then(function(j){
+        var c=j.state;if(!c)return;var raw=ls('sph3u-kin-l'+id),cur=null;try{cur=raw?JSON.parse(raw):null;}catch(e){}
+        if(!cur||(c.t||0)>(cur.t||0)){try{window.localStorage.setItem('sph3u-kin-l'+id,JSON.stringify(c));n++;}catch(e){}}
+      }));
+    });
+    return Promise.all(jobs).then(function(){try{window.localStorage.setItem(NAMEKEY,name);}catch(e){}paint();st.textContent=n?'Loaded progress for '+n+' lesson'+(n>1?'s':'')+'.':'Up to date.';})
+      .catch(function(){st.textContent='Could not reach online storage. Showing progress saved on this device.';});
+  }
+  document.getElementById('nmgo').addEventListener('click',function(){var v=clean(inp.value);if(!v){st.textContent='Type your name first.';return;}inp.value=v;pull(v);});
+  if(inp.value)pull(clean(inp.value));
+}
+window.addEventListener('pageshow',paint);
+})();
 </script>
 
 <script>
 
+window.SPH_CONFIG={"url": "https://script.google.com/macros/s/AKfycbwqPxJxbtj5VDiZuAEIj3VlkQXah9QTBB6qcyRggRj8UvO2IaJ5-P4ezogZITqfi5lphA/exec", "key": "grayson2026"};
 (function(){
 'use strict';
 var LID=document.body.getAttribute('data-lesson')||'x';
@@ -565,39 +703,63 @@ function setupWidgets(){
   });
 }
 
-/* ---------- progress strip, sections ---------- */
-var plays=[],ball=null,marks=[],pitchLabel=null;
+/* ---------- progress strip, one part at a time ---------- */
+var plays=[],ball=null,marks=[],pitchLabel=null,showAll=false,showBtn=null;
+function reduceMotion(){return window.matchMedia('(prefers-reduced-motion: reduce)').matches;}
+function goTo(el){el.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});}
+function currentIdx(){for(var i=0;i<plays.length;i++){if(!S.d[plays[i].id])return i;}return plays.length;}
 function setupProgress(){
   plays=Array.prototype.slice.call(document.querySelectorAll('.play[data-track]'));
   var nav=document.getElementById('pitch');if(!nav||!plays.length)return;
-  nav.innerHTML='<div class="wrap"><div class="pitch-track"></div><p class="pitch-label"></p></div>';
-  var track=nav.querySelector('.pitch-track');pitchLabel=nav.querySelector('.pitch-label');
+  nav.innerHTML='<div class="wrap"><div class="pitch-track"></div><div class="pitch-row"><a class="backlink" href="index.html">&larr; All lessons</a><button type="button" class="showall-btn"></button></div><p class="pitch-label"></p></div>';
+  var track=nav.querySelector('.pitch-track');pitchLabel=nav.querySelector('.pitch-label');showBtn=nav.querySelector('.showall-btn');
+  showAll=currentIdx()>=plays.length;
+  showBtn.addEventListener('click',function(){showAll=!showAll;refreshProgress();});
   plays.forEach(function(p,i){
     var pos=(i+1)/(plays.length+1)*100;
     var m=h('button','pitch-mark');m.type='button';m.style.left=pos+'%';
-    var t=p.querySelector('h2');m.setAttribute('aria-label','Go to '+(t?t.textContent:'section '+(i+1)));
-    m.addEventListener('click',function(){p.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+    var t=p.querySelector('h2');m.setAttribute('aria-label','Go to '+(t?t.textContent:'part '+(i+1)));
+    m.addEventListener('click',function(){
+      if(i>currentIdx()&&!showAll){pitchLabel.textContent='Finish the parts before this one first.';return;}
+      if(p.classList.contains('collapsed'))reopen(p);
+      goTo(p);
+    });
     track.appendChild(m);marks.push(m);
+    var rb=h('button','reopen','Show this part again');rb.type='button';
+    rb.addEventListener('click',function(){reopen(p);});
+    var w=p.querySelector('.wrap');if(w)w.insertBefore(rb,t?t.nextSibling:w.firstChild);
     var db=p.querySelector('.done-btn');
     if(db){
       db.addEventListener('click',function(){
-        S.d[p.id]=!S.d[p.id];save();refreshProgress();
-        if(S.d[p.id]&&plays[i+1]){plays[i+1].scrollIntoView({behavior:'smooth',block:'start'});}
+        var was=!!S.d[p.id];S.d[p.id]=!was;save();
+        if(!was){opened[p.id]=false;}
+        refreshProgress();
+        if(!was){var nx=plays[i+1];if(nx)goTo(nx);else goTo(document.getElementById('pitch'));}
       });
     }
   });
   ball=h('div','pitch-ball');ball.style.left='3%';track.appendChild(ball);
   refreshProgress();
 }
+var opened={};
+function reopen(p){opened[p.id]=true;refreshProgress();}
 function refreshProgress(){
-  if(!plays.length)return;var done=0;
+  if(!plays.length)return;var done=0,cur=currentIdx();
   plays.forEach(function(p,i){
     var d=!!S.d[p.id];if(d)done++;
-    p.classList.toggle('finished',d);marks[i].classList.toggle('on',d);
-    var db=p.querySelector('.done-btn');if(db)db.textContent=d?'Marked as done (tap to undo)':'I finished this part';
+    p.classList.toggle('finished',d);marks[i].classList.toggle('on',d);marks[i].classList.toggle('cur',i===cur&&!showAll);
+    var locked=!showAll&&i>cur;
+    var collapsed=!showAll&&i<cur&&!opened[p.id];
+    p.classList.toggle('locked',locked);p.classList.toggle('collapsed',collapsed);
+    p.classList.toggle('current',!showAll&&i===cur);
+    var db=p.querySelector('.done-btn');
+    if(db)db.textContent=d?'Marked as done (tap to undo)':(i===plays.length-1?'I finished this lesson':(showAll?'I finished this part':'I finished this part. Show the next part'));
   });
   var frac=done/plays.length;ball.style.left=(3+frac*94)+'%';
-  pitchLabel.textContent=done+' of '+plays.length+' parts finished';
+  if(done>=plays.length)pitchLabel.textContent='All '+plays.length+' parts finished';
+  else if(showAll)pitchLabel.textContent=done+' of '+plays.length+' parts finished';
+  else{var t=plays[cur].querySelector('h2');var tx=t?t.textContent.replace(/^\s*\d+\s*/,''):'';pitchLabel.textContent='Part '+(cur+1)+' of '+plays.length+': '+tx;}
+  showBtn.textContent=showAll?'Focus on one part':'Show all parts';
 }
 
 /* ---------- can-do checklist ---------- */

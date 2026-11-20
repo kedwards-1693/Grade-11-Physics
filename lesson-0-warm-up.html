@@ -49,7 +49,11 @@ sup,sub{line-height:0}
 .pitch .pitch-mark:hover{background:var(--turf)}
 .pitch .pitch-mark.on{background:var(--card-yellow);border-color:var(--card-yellow)}
 .pitch-ball{position:absolute;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#16221b 0 28%,#fff 30%);border:2px solid #16221b;pointer-events:none;transition:left .7s cubic-bezier(.3,.7,.2,1)}
-.pitch-label{color:#e4f0e2;font-size:.82rem;margin:4px 0 0;max-width:none}
+.pitch-label{color:#e4f0e2;font-size:.9rem;margin:4px 0 0;max-width:none;font-weight:600}
+.pitch-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.showall-btn{background:transparent;color:#fff;border:1px solid #9fc3a5;border-radius:999px;padding:4px 12px;min-height:32px;font-size:.8rem;cursor:pointer;margin-top:4px}
+.showall-btn:hover{background:var(--turf)}
+.pitch .pitch-mark.cur{box-shadow:0 0 0 3px rgba(244,194,13,.55)}
 @media (prefers-reduced-motion:reduce){.pitch-ball{transition:none}}
 
 /* sections */
@@ -172,6 +176,31 @@ table.fill td{padding:4px}
 .fillgrid label{display:block;font-size:.92rem;color:var(--ink-soft)}
 @media (max-width:520px){.fillgrid{grid-template-columns:1fr}table.fill{font-size:.9rem}}
 @media print{.entry{border:1px solid #888}}
+
+/* figures */
+.fig,.gfig{margin:10px 0;max-width:430px}
+.gsvg{display:block;width:100%;height:auto;border:2px solid var(--line);border-radius:8px;background:#fff}
+.figcap{font-size:.92rem;color:var(--ink-soft);margin:-4px 0 14px;max-width:var(--measure)}
+details.model{border:2px solid var(--line);border-radius:8px;padding:8px 12px;margin:10px 0;max-width:var(--measure)}
+details.model summary{font-weight:700;cursor:pointer}
+.eqtable td:first-child{white-space:nowrap}
+.figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;max-width:100%;margin:10px 0}
+.figrow .fig{margin:0}
+
+/* one part at a time */
+.play[data-track]{scroll-margin-top:96px}
+.play.locked{display:none}
+.play.collapsed .wrap>*:not(h2):not(.reopen){display:none}
+.play.collapsed{padding:12px 0;background:#f6f9f5}
+.play.collapsed>.wrap>h2{margin:0;font-size:1.05rem;color:var(--ink-soft)}
+.play .reopen{display:none}
+.play.collapsed .reopen{display:inline-block;margin:6px 0 0 46px;background:#fff;color:var(--turf-deep);border:1px solid var(--line);border-radius:999px;padding:4px 12px;min-height:32px;font-size:.82rem;cursor:pointer}
+.play.current{box-shadow:inset 6px 0 0 var(--card-yellow);background:linear-gradient(#fff,#fff)}
+.play.current .done-btn{font-size:1.05rem;padding:12px 20px}
+@media (prefers-reduced-motion:no-preference){.play.current{animation:partin .35s ease-out}@keyframes partin{from{opacity:.4}to{opacity:1}}}
+
+.backlink{color:#fff;font-size:.85rem;font-weight:700;text-decoration:none;border:1px solid #9fc3a5;border-radius:999px;padding:4px 12px;min-height:32px;display:inline-flex;align-items:center;margin-top:4px}
+.backlink:hover{background:var(--turf)}
 
 </style>
 </head>
@@ -464,6 +493,7 @@ SPH.quiz('q0',[
 ]);
 };
 
+window.SPH_CONFIG={"url": "https://script.google.com/macros/s/AKfycbwqPxJxbtj5VDiZuAEIj3VlkQXah9QTBB6qcyRggRj8UvO2IaJ5-P4ezogZITqfi5lphA/exec", "key": "grayson2026"};
 (function(){
 'use strict';
 var LID=document.body.getAttribute('data-lesson')||'x';
@@ -631,7 +661,7 @@ function quiz(id,qs){
   qs.forEach(function(q,i){
     REG.push({id:q.id,tag:q.tag||'',n:i+1,box:id});
     var card=h('div','qcard');
-    var head=h('div','qhead','<span>Question '+(i+1)+' of '+qs.length+'</span><span>'+(q.tag||'')+'</span>');
+    var head=h('div','qhead','<span>Question '+(i+1)+' of '+qs.length+'</span><span>'+(box.getAttribute('data-hide-tags')?'':(q.tag||''))+'</span>');
     card.appendChild(head);
     var prev=S.q[q.id];
     if(prev&&prev.done){
@@ -719,43 +749,67 @@ function widgetTrip(el){
 function setupWidgets(){
   Array.prototype.forEach.call(document.querySelectorAll('[data-widget]'),function(el){
     var w=el.getAttribute('data-widget');
-    if(w==='sigs')widgetSigs(el);else if(w==='kmh')widgetKmh(el);else if(w==='rearr')widgetRearr(el);else if(w==='trip')widgetTrip(el);
+    if(w==='sigs')widgetSigs(el);else if(w==='kmh')widgetKmh(el);else if(w==='rearr')widgetRearr(el);else if(w==='trip')widgetTrip(el);else if(w==='bigfive')widgetBigFive(el);else if(w==='secant')widgetSecant(el);else if(w==='proj')widgetProj(el);
   });
 }
 
-/* ---------- progress strip, sections ---------- */
-var plays=[],ball=null,marks=[],pitchLabel=null;
+/* ---------- progress strip, one part at a time ---------- */
+var plays=[],ball=null,marks=[],pitchLabel=null,showAll=false,showBtn=null;
+function reduceMotion(){return window.matchMedia('(prefers-reduced-motion: reduce)').matches;}
+function goTo(el){el.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});}
+function currentIdx(){for(var i=0;i<plays.length;i++){if(!S.d[plays[i].id])return i;}return plays.length;}
 function setupProgress(){
   plays=Array.prototype.slice.call(document.querySelectorAll('.play[data-track]'));
   var nav=document.getElementById('pitch');if(!nav||!plays.length)return;
-  nav.innerHTML='<div class="wrap"><div class="pitch-track"></div><p class="pitch-label"></p></div>';
-  var track=nav.querySelector('.pitch-track');pitchLabel=nav.querySelector('.pitch-label');
+  nav.innerHTML='<div class="wrap"><div class="pitch-track"></div><div class="pitch-row"><a class="backlink" href="index.html">&larr; All lessons</a><button type="button" class="showall-btn"></button></div><p class="pitch-label"></p></div>';
+  var track=nav.querySelector('.pitch-track');pitchLabel=nav.querySelector('.pitch-label');showBtn=nav.querySelector('.showall-btn');
+  showAll=currentIdx()>=plays.length;
+  showBtn.addEventListener('click',function(){showAll=!showAll;refreshProgress();});
   plays.forEach(function(p,i){
     var pos=(i+1)/(plays.length+1)*100;
     var m=h('button','pitch-mark');m.type='button';m.style.left=pos+'%';
-    var t=p.querySelector('h2');m.setAttribute('aria-label','Go to '+(t?t.textContent:'section '+(i+1)));
-    m.addEventListener('click',function(){p.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+    var t=p.querySelector('h2');m.setAttribute('aria-label','Go to '+(t?t.textContent:'part '+(i+1)));
+    m.addEventListener('click',function(){
+      if(i>currentIdx()&&!showAll){pitchLabel.textContent='Finish the parts before this one first.';return;}
+      if(p.classList.contains('collapsed'))reopen(p);
+      goTo(p);
+    });
     track.appendChild(m);marks.push(m);
+    var rb=h('button','reopen','Show this part again');rb.type='button';
+    rb.addEventListener('click',function(){reopen(p);});
+    var w=p.querySelector('.wrap');if(w)w.insertBefore(rb,t?t.nextSibling:w.firstChild);
     var db=p.querySelector('.done-btn');
     if(db){
       db.addEventListener('click',function(){
-        S.d[p.id]=!S.d[p.id];save();refreshProgress();
-        if(S.d[p.id]&&plays[i+1]){plays[i+1].scrollIntoView({behavior:'smooth',block:'start'});}
+        var was=!!S.d[p.id];S.d[p.id]=!was;save();
+        if(!was){opened[p.id]=false;}
+        refreshProgress();
+        if(!was){var nx=plays[i+1];if(nx)goTo(nx);else goTo(document.getElementById('pitch'));}
       });
     }
   });
   ball=h('div','pitch-ball');ball.style.left='3%';track.appendChild(ball);
   refreshProgress();
 }
+var opened={};
+function reopen(p){opened[p.id]=true;refreshProgress();}
 function refreshProgress(){
-  if(!plays.length)return;var done=0;
+  if(!plays.length)return;var done=0,cur=currentIdx();
   plays.forEach(function(p,i){
     var d=!!S.d[p.id];if(d)done++;
-    p.classList.toggle('finished',d);marks[i].classList.toggle('on',d);
-    var db=p.querySelector('.done-btn');if(db)db.textContent=d?'Marked as done (tap to undo)':'I finished this part';
+    p.classList.toggle('finished',d);marks[i].classList.toggle('on',d);marks[i].classList.toggle('cur',i===cur&&!showAll);
+    var locked=!showAll&&i>cur;
+    var collapsed=!showAll&&i<cur&&!opened[p.id];
+    p.classList.toggle('locked',locked);p.classList.toggle('collapsed',collapsed);
+    p.classList.toggle('current',!showAll&&i===cur);
+    var db=p.querySelector('.done-btn');
+    if(db)db.textContent=d?'Marked as done (tap to undo)':(i===plays.length-1?'I finished this lesson':(showAll?'I finished this part':'I finished this part. Show the next part'));
   });
   var frac=done/plays.length;ball.style.left=(3+frac*94)+'%';
-  pitchLabel.textContent=done+' of '+plays.length+' parts finished';
+  if(done>=plays.length)pitchLabel.textContent='All '+plays.length+' parts finished';
+  else if(showAll)pitchLabel.textContent=done+' of '+plays.length+' parts finished';
+  else{var t=plays[cur].querySelector('h2');var tx=t?t.textContent.replace(/^\s*\d+\s*/,''):'';pitchLabel.textContent='Part '+(cur+1)+' of '+plays.length+': '+tx;}
+  showBtn.textContent=showAll?'Focus on one part':'Show all parts';
 }
 
 /* ---------- can-do checklist ---------- */
@@ -865,6 +919,113 @@ function setupSync(){
 }
 
 
+
+/* ---------- graphs (inline SVG) ---------- */
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function nfmt(v){var r=Math.round(v*100)/100;return String(r);}
+function sampleFn(sr){
+  var f=sr.fn;if(typeof f==='string'){f=new Function('t','return '+f+';');}
+  var a=sr.from,b=sr.to,n=sr.n||60,pts=[];
+  for(var i=0;i<=n;i++){var t=a+(b-a)*i/n;pts.push([t,f(t)]);}
+  return pts;
+}
+function graph(o){
+  var W=o.w||380,H=o.h||250,L=50,R=16,T=14,B=42;
+  var x0=o.x[0],x1=o.x[1],xs=o.x[2],y0=o.y[0],y1=o.y[1],ys=o.y[2];
+  function X(v){return L+(v-x0)/(x1-x0)*(W-L-R);}
+  function Y(v){return H-B-(v-y0)/(y1-y0)*(H-T-B);}
+  var s='<svg class="gsvg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.alt||'Graph')+'" xmlns="http://www.w3.org/2000/svg">';
+  s+='<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#fff"/>';
+  var v,i;
+  for(v=x0;v<=x1+1e-9;v+=xs){var xx=X(v);s+='<line x1="'+xx+'" y1="'+T+'" x2="'+xx+'" y2="'+(H-B)+'" stroke="#e1e8df" stroke-width="1"/>';s+='<text x="'+xx+'" y="'+(H-B+15)+'" text-anchor="middle" font-size="11" fill="#4a5a50">'+nfmt(v)+'</text>';}
+  for(v=y0;v<=y1+1e-9;v+=ys){var yy=Y(v);s+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#e1e8df" stroke-width="1"/>';s+='<text x="'+(L-6)+'" y="'+(yy+4)+'" text-anchor="end" font-size="11" fill="#4a5a50">'+nfmt(v)+'</text>';}
+  if(y0<0&&y1>0)s+='<line x1="'+L+'" y1="'+Y(0)+'" x2="'+(W-R)+'" y2="'+Y(0)+'" stroke="#16221b" stroke-width="1.6"/>';
+  s+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(H-B)+'" stroke="#16221b" stroke-width="1.6"/>';
+  s+='<line x1="'+L+'" y1="'+(H-B)+'" x2="'+(W-R)+'" y2="'+(H-B)+'" stroke="#16221b" stroke-width="1.6"/>';
+  (o.fills||[]).forEach(function(f){
+    var pts=f.pts.map(function(p){return X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1);}).join(' ');
+    s+='<polygon points="'+pts+'" fill="'+(f.color||'#2d6a3e')+'" fill-opacity="'+(f.op||0.22)+'" stroke="none"/>';
+  });
+  (o.series||[]).forEach(function(sr){
+    var pts=sr.pts||sampleFn(sr);
+    var d=pts.map(function(p,k){return (k?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1);}).join(' ');
+    s+='<path d="'+d+'" fill="none" stroke="'+(sr.color||'#2d6a3e')+'" stroke-width="'+(sr.w||2.8)+'"'+(sr.dash?' stroke-dasharray="'+sr.dash+'"':'')+' stroke-linejoin="round" stroke-linecap="round"/>';
+  });
+  (o.lines||[]).forEach(function(l){
+    s+='<line x1="'+X(l.x1)+'" y1="'+Y(l.y1)+'" x2="'+X(l.x2)+'" y2="'+Y(l.y2)+'" stroke="'+(l.color||'#c8372d')+'" stroke-width="'+(l.w||2)+'"'+(l.dash?' stroke-dasharray="'+l.dash+'"':'')+'/>';
+  });
+  (o.marks||[]).forEach(function(m){
+    s+='<circle cx="'+X(m.x)+'" cy="'+Y(m.y)+'" r="4.5" fill="'+(m.color||'#c8372d')+'" stroke="#fff" stroke-width="1.5"/>';
+    if(m.label)s+='<text x="'+(X(m.x)+(m.dx==null?8:m.dx))+'" y="'+(Y(m.y)+(m.dy==null?-8:m.dy))+'" font-size="11.5" font-weight="700" fill="#16221b"'+(m.anchor?' text-anchor="'+m.anchor+'"':'')+'>'+esc(m.label)+'</text>';
+  });
+  (o.texts||[]).forEach(function(t){
+    s+='<text x="'+X(t.x)+'" y="'+Y(t.y)+'" font-size="12" font-weight="700" fill="'+(t.color||'#1d4a2b')+'"'+(t.anchor?' text-anchor="'+t.anchor+'"':'')+'>'+esc(t.t)+'</text>';
+  });
+  s+='<text x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16221b">'+esc(o.xl||'')+'</text>';
+  s+='<text transform="translate(13 '+((T+H-B)/2)+') rotate(-90)" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16221b">'+esc(o.yl||'')+'</text>';
+  return s+'</svg>';
+}
+function setupFigs(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fig]'),function(el){
+    try{el.innerHTML=graph(JSON.parse(el.getAttribute('data-fig')));}catch(e){}
+  });
+}
+window.SPH.graph=graph;
+
+/* ---------- extra widgets ---------- */
+function widgetBigFive(el){
+  var map={
+    'dd':['Δd','v<sub>f</sub> = v<sub>i</sub> + a&Delta;t','This one has no &Delta;d in it.'],
+    'a':['a','&Delta;d = &frac12;(v<sub>f</sub> + v<sub>i</sub>)&Delta;t','This one has no a in it.'],
+    'vf':['v<sub>f</sub>','&Delta;d = v<sub>i</sub>&Delta;t + &frac12;a&Delta;t&sup2;','This one has no v<sub>f</sub> in it.'],
+    'vi':['v<sub>i</sub>','&Delta;d = v<sub>f</sub>&Delta;t &minus; &frac12;a&Delta;t&sup2;','This one has no v<sub>i</sub> in it.'],
+    'dt':['Δt','v<sub>f</sub>&sup2; = v<sub>i</sub>&sup2; + 2a&Delta;d','This one has no &Delta;t in it.']
+  };
+  var opts=Object.keys(map).map(function(k){return '<option value="'+k+'">'+map[k][0]+'</option>';}).join('');
+  el.innerHTML='<p><b>Equation picker.</b> A problem has five possible quantities. Three are given, one is asked for, and <b>one is neither</b>. Pick the one that is neither:</p>'+
+    '<label>The quantity that is NOT given and NOT asked for: <select aria-label="Missing quantity"><option value="">Choose&hellip;</option>'+opts+'</select></label><div class="out" role="status" aria-live="polite"></div>';
+  var sel=el.querySelector('select'),out=el.querySelector('.out');
+  sel.addEventListener('change',function(){
+    var m=map[sel.value];if(!m){out.innerHTML='';return;}
+    out.innerHTML='<p class="formula">'+m[1]+'</p><p>'+m[2]+' Use it to find your unknown, because everything else in it is either given or the unknown.</p>';
+  });
+}
+
+function widgetProj(el){
+  el.innerHTML='<p><b>Kick it.</b> Change the launch speed and angle. The ball starts at ground level and lands at ground level. Air is ignored.</p>'+
+   '<label>Launch speed: <b class="sv">20</b> m/s <input class="rs1" type="range" min="5" max="30" step="1" value="20" aria-label="Launch speed" style="width:100%;min-height:32px"></label>'+
+   '<label>Angle above horizontal: <b class="av">35</b>&deg; <input class="rs2" type="range" min="5" max="85" step="5" value="35" aria-label="Launch angle" style="width:100%;min-height:32px"></label>'+
+   '<div class="gfig"></div><div class="out" role="status" aria-live="polite"></div>';
+  var r1=el.querySelector('.rs1'),r2=el.querySelector('.rs2'),sv=el.querySelector('.sv'),av=el.querySelector('.av'),gf=el.querySelector('.gfig'),out=el.querySelector('.out');
+  function path(v,deg){var th=deg*Math.PI/180,vx=v*Math.cos(th),vy=v*Math.sin(th),T=2*vy/9.8,pts=[];for(var i=0;i<=60;i++){var t=T*i/60;pts.push([vx*t,vy*t-4.9*t*t]);}return pts;}
+  function draw(){
+    var v=parseFloat(r1.value),deg=parseFloat(r2.value);sv.textContent=v;av.textContent=deg;
+    var th=deg*Math.PI/180,vx=v*Math.cos(th),vy=v*Math.sin(th),T=2*vy/9.8,R=vx*T,H=vy*vy/(2*9.8);
+    var ser=[{pts:path(v,90-deg),color:'#9aa89c',dash:'5 4',w:2},{pts:path(v,deg),color:'#2d6a3e',w:3}];
+    gf.innerHTML=graph({x:[0,100,20],y:[0,50,10],xl:'horizontal distance (m)',yl:'height (m)',alt:'Path of a kicked ball for the chosen speed and angle, with the complementary angle path dashed.',series:ser,
+      marks:[{x:R,y:0,color:'#c8372d'}]});
+    out.innerHTML='<p>Horizontal speed v<sub>x</sub> = '+vx.toFixed(1)+' m/s (never changes). Starting upward speed v<sub>iy</sub> = '+vy.toFixed(1)+' m/s.</p><p>Time in the air = '+T.toFixed(2)+' s. Range = <b>'+R.toFixed(1)+' m</b>. Maximum height = '+H.toFixed(1)+' m.</p><p>The dashed grey path is the complementary angle ('+(90-deg)+'&deg;): the same speed gives the <b>same range</b>. At 45&deg; the two paths are the same, and the range is the greatest.</p>';
+  }
+  r1.addEventListener('input',draw);r2.addEventListener('input',draw);draw();
+}
+
+function widgetSecant(el){
+  el.innerHTML='<p><b>Zoom in on one instant.</b> A player&rsquo;s position is d = t&sup2; (d in m, t in s). Watch the average velocity from 3.0 s to a later time as the time gap shrinks.</p>'+
+   '<label>Time gap: <b class="hv">2.0</b> s <input type="range" min="0.1" max="2" step="0.1" value="2" aria-label="Time gap in seconds" style="width:100%;min-height:32px"></label>'+
+   '<div class="gfig"></div><div class="out" role="status" aria-live="polite"></div>';
+  var rg=el.querySelector('input'),hv=el.querySelector('.hv'),gf=el.querySelector('.gfig'),out=el.querySelector('.out');
+  function draw(){
+    var hh=parseFloat(rg.value),t2=3+hh,d1=9,d2=t2*t2;hv.textContent=hh.toFixed(1);
+    var m=(d2-d1)/hh;
+    gf.innerHTML=graph({x:[0,6,1],y:[0,36,6],xl:'time (s)',yl:'position (m)',alt:'Position-time curve d equals t squared with a secant line starting at 3 seconds',
+      series:[{fn:'t*t',from:0,to:6,n:60}],
+      lines:[{x1:3-1.5,y1:9-6*1.5,x2:3+1.5,y2:9+6*1.5,color:'#16221b',dash:'5 4',w:1.6},{x1:3,y1:9,x2:t2,y2:d2,color:'#c8372d',w:2.4}],
+      marks:[{x:3,y:9,label:'3.0 s',dx:-8,dy:-10,anchor:'end'},{x:t2,y:d2,color:'#c8372d'}]});
+    out.innerHTML='<p>Average velocity from 3.0 s to '+t2.toFixed(1)+' s = ('+d2.toFixed(2)+' &minus; 9.00) &divide; '+hh.toFixed(1)+' = <b>'+m.toFixed(2)+' m/s</b>. The dashed line is the tangent. Its slope is the velocity <i>at</i> 3.0 s: <b>6.0 m/s</b>.</p>';
+  }
+  rg.addEventListener('input',draw);draw();
+}
+
 /* ---------- typed entries (hands-on tables) ---------- */
 function fieldKey(el){return 'f:'+el.getAttribute('data-field');}
 function setupFields(){
@@ -920,6 +1081,75 @@ function runCheck(kind,arg){
     if(!near(Math.abs(ve),Math.abs(D)/tt,0.05))bad('Average velocity = displacement &divide; time. Use the <b>displacement</b>, not the distance.');
     if(ok)m.push('Your speed and velocity both match your own measurements. Notice which one is smaller. Why?');
     return {ok:ok,html:'<p>'+m.join('</p><p>')+'</p>'};
+  }
+
+  if(kind==='ruler'){
+    var rr=arg,dcm=parseNum(fv('rl'+rr+'d')),tr=parseNum(fv('rl'+rr+'t'));
+    if(isNaN(dcm)||dcm<=0)return {ok:false,html:'<p>Type the distance the ruler fell for drop '+rr+', in centimetres.</p>'};
+    if(isNaN(tr))return {ok:false,html:'<p>Now work out your reaction time for drop '+rr+' and type it in seconds.</p>'};
+    var ext=Math.sqrt(2*(dcm/100)/9.8);
+    if(near(tr,ext,0.08))return {ok:true,html:'<p>Drop '+rr+' checks out: about '+ext.toFixed(2)+' s. Most people land between 0.15 s and 0.25 s.</p>'};
+    if(near(tr,Math.sqrt(2*dcm/9.8),0.08))return {ok:false,html:'<p>Convert the distance to metres first. 1 cm = 0.01 m.</p>'};
+    return {ok:false,html:'<p>Use &Delta;d = &frac12;a&Delta;t&sup2; with a = 9.8 m/s&sup2; and v<sub>i</sub> = 0, so &Delta;t = &radic;(2&Delta;d &divide; 9.8). Check that the distance is in metres.</p>'};
+  }
+  if(kind==='throw'){
+    var a30=parseNum(fv('th30')),a45=parseNum(fv('th45')),a60=parseNum(fv('th60'));
+    if(isNaN(a30)||isNaN(a45)||isNaN(a60))return {ok:false,html:'<p>Type a distance for each of the three angles first.</p>'};
+    if(a45>=a30&&a45>=a60)return {ok:true,html:'<p>45&deg; went farthest, as the physics predicts. Notice that 30&deg; and 60&deg; go about the same distance. They are complementary angles.</p>'};
+    return {ok:false,html:'<p>The physics says 45&deg; should go farthest (and 30&deg; and 60&deg; about the same). Real throws vary a lot. Do 3 throws at each angle and use the average of each. Did one angle have a bad throw?</p>'};
+  }
+
+  if(kind==='ptwalk'){
+    var ts=[];for(var i=0;i<6;i++){ts.push(parseNum(fv('pw'+i)));}
+    var vv=parseNum(fv('pwv'));
+    if(ts.some(isNaN))return {ok:false,html:'<p>Type the time you reached each cone (0 m to 10 m) in the table first.</p>'};
+    for(var j=1;j<6;j++){if(ts[j]<=ts[j-1])return {ok:false,html:'<p>The times should keep getting bigger as you walk further. Check cone '+j+'.</p>'};}
+    if(isNaN(vv))return {ok:false,html:'<p>Now work out your average velocity from 0 m to 10 m and type it in.</p>'};
+    var ev=10/(ts[5]-ts[0]);
+    if(!near(vv,ev,0.05))return {ok:false,html:'<p>Average velocity = &Delta;d &divide; &Delta;t = 10 m &divide; ('+ts[5]+' &minus; '+ts[0]+') s. Check that division.</p>'};
+    var gaps=[];for(var k=1;k<6;k++)gaps.push(ts[k]-ts[k-1]);
+    var mx=Math.max.apply(null,gaps),mn=Math.min.apply(null,gaps);
+    var steady=(mx-mn)<=0.25*mx;
+    return {ok:true,html:'<p>Your average velocity checks out at about '+ev.toFixed(1)+' m/s.</p><p>'+(steady?'Your times were evenly spaced, so your graph should be close to a straight line. That is constant velocity.':'Your times were not evenly spaced, so your graph will bend. That means your velocity was changing.')+'</p>'};
+  }
+
+  if(kind==='vtwalk'){
+    var tv=[];for(var i=0;i<6;i++){tv.push(parseNum(fv('vt'+i)));}
+    if(tv.some(isNaN))return {ok:false,html:'<p>Type the time you reached each cone first.</p>'};
+    for(var j=1;j<6;j++){if(tv[j]<=tv[j-1])return {ok:false,html:'<p>The times should keep getting bigger. Check cone '+j+'.</p>'};}
+    var vs=[];for(var k=1;k<=5;k++){vs.push(parseNum(fv('vv'+k)));}
+    if(vs.some(isNaN))return {ok:false,html:'<p>Work out the velocity for each 2 m section and type all five. Velocity = 2.0 m &divide; the time for that section.</p>'};
+    var badk=0;for(var m=0;m<5;m++){if(!near(vs[m],2.0/(tv[m+1]-tv[m]),0.06))badk=m+1;}
+    if(badk)return {ok:false,html:'<p>Check section '+badk+'. Velocity = 2.0 m &divide; ('+tv[badk]+' &minus; '+tv[badk-1]+') s.</p>'};
+    var up=vs[4]>vs[0]*1.15,down=vs[4]<vs[0]/1.15;
+    return {ok:true,html:'<p>All five velocities check out.</p><p>'+(up?'Your velocities grew from section to section, so your v-t graph slopes upward. That is a positive acceleration.':(down?'Your velocities shrank, so your v-t graph slopes downward. You were slowing down.':'Your velocities stayed about the same, so your v-t graph is nearly flat. That is a constant velocity. Try again and really speed up from slow to fast.'))+'</p>'};
+  }
+  if(kind==='carride'){
+    var dk=parseNum(fv('cr_d')),tm=parseNum(fv('cr_t')),av=parseNum(fv('cr_v'));
+    var rd=[parseNum(fv('cr1')),parseNum(fv('cr2')),parseNum(fv('cr3'))];
+    if(isNaN(dk)||isNaN(tm)||tm<=0||isNaN(av)||rd.some(isNaN))return {ok:false,html:'<p>Fill in the trip distance, trip time, your average speed and all three speedometer readings.</p>'};
+    var exv=dk/(tm/60);
+    if(!near(av,exv,0.05))return {ok:false,html:'<p>Average speed = distance &divide; time. The time is in minutes, so divide by 60 to get hours: '+dk+' km &divide; ('+tm+' &divide; 60) h.</p>'};
+    var mn=Math.min.apply(null,rd),mx=Math.max.apply(null,rd);
+    return {ok:true,html:'<p>Your average speed checks out at about '+exv.toFixed(0)+' km/h.</p><p>Your three speedometer readings ranged from '+mn+' to '+mx+' km/h. '+((mx-mn)>5?'None of them had to match the average. Each reading is an instantaneous speed, at one moment.':'They were close to each other, so it was a steady trip. On a stop-and-go trip they would differ a lot more.')+'</p>'};
+  }
+
+  if(kind==='ramp'){
+    var rd=parseNum(fv('rp_d')),rt=parseNum(fv('rp_t')),rva=parseNum(fv('rp_va')),rvf=parseNum(fv('rp_vf')),ra=parseNum(fv('rp_a'));
+    if([rd,rt,rva,rvf,ra].some(isNaN)||rt<=0)return {ok:false,html:'<p>Fill in all five boxes: distance, time, average velocity, final velocity and acceleration.</p>'};
+    if(!near(rva,rd/rt,0.06))return {ok:false,html:'<p>Average velocity = distance &divide; time = '+rd+' &divide; '+rt+'.</p>'};
+    if(!near(rvf,2*rva,0.06))return {ok:false,html:'<p>The ball starts at 0 and speeds up steadily, so its average velocity is halfway between 0 and v<sub>f</sub>. That means v<sub>f</sub> = 2 &times; the average velocity.</p>'};
+    if(!near(ra,rvf/rt,0.06))return {ok:false,html:'<p>Acceleration = change in velocity &divide; time = v<sub>f</sub> &divide; &Delta;t = '+rvf.toFixed(2)+' &divide; '+rt+'.</p>'};
+    return {ok:true,html:'<p>Your ramp acceleration is about '+(rvf/rt).toFixed(2)+' m/s&sup2;. Tilt the ramp higher and try again. Does the acceleration go up? (It should.)</p>'};
+  }
+
+  if(kind==='vecwalk'){
+    var e=parseNum(fv('hw_e')),n=parseNum(fv('hw_n')),mr=parseNum(fv('hw_m')),cr=parseNum(fv('hw_c'));
+    if([e,n,mr,cr].some(isNaN))return {ok:false,html:'<p>Fill in the east distance, the north distance, the straight-line distance you measured and the one you calculated.</p>'};
+    var ex=Math.sqrt(e*e+n*n);
+    if(!near(cr,ex,0.04))return {ok:false,html:'<p>The straight-line distance comes from Pythagoras: &radic;(east&sup2; + north&sup2;) = &radic;('+e+'&sup2; + '+n+'&sup2;).</p>'};
+    if(!near(mr,ex,0.12))return {ok:false,html:'<p>Your calculated value is right ('+ex.toFixed(2)+'), but your tape-measure value is quite different. Walk it again and measure from the exact start to the exact finish.</p>'};
+    return {ok:true,html:'<p>Your measured and calculated distances agree (about '+ex.toFixed(1)+'). The direction is [E '+(Math.atan2(n,e)*180/Math.PI).toFixed(0)+'&deg; N].</p>'};
   }
   if(kind==='walk0'){
     var t0=parseNum(fv('wk2t')),D0=parseNum(fv('wk2D')),v0=parseNum(fv('wk2v'));
@@ -984,7 +1214,7 @@ function setupResults(){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  setupReveal();setupWidgets();setupProgress();setupCan();setupResults();setupFields();setupSync();
+  setupFigs();setupReveal();setupWidgets();setupProgress();setupCan();setupResults();setupFields();setupSync();
   if(window.LESSON_INIT)window.LESSON_INIT(window.SPH);
   updateResults();
 });
