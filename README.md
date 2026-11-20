@@ -18,7 +18,8 @@ More lessons will be added as they are finished.
 - Plan about 60 minutes per lesson.
 - Have a calculator, pencil and paper ready.
 - Each lesson points to the matching items in Google Classroom. Do those too.
-- Progress is saved in the browser on the device being used, so stick to one device. Each lesson ends with a results summary that can be copied and shared.
+- Type your name once in the yellow bar at the top of a lesson. Your answers and hands-on entries then save online automatically, and you can pick up on any device by typing the same name.
+- If online saving is unavailable, progress still saves in the browser on that device.
 
 ## Files
 
