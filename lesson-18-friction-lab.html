@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forces Lesson 18: Friction and the friction lab</title>
+<style>
+:root{
+  --turf:#2d6a3e; --turf-deep:#1d4a2b; --turf-wash:#eaf2e8; --line:#d3dfd0;
+  --ink:#16221b; --ink-soft:#4a5a50; --paper:#ffffff;
+  --card-yellow:#f4c20d; --yellow-wash:#fff6cf; --red:#c8372d; --red-wash:#fde9e7;
+  --good:#17803f; --good-wash:#e3f4e8; --amber-wash:#fff1dc;
+  --measure:68ch;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:18px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--turf-deep);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--card-yellow);outline-offset:2px}
+h1,h2,h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-weight:900;font-style:italic;font-size:clamp(1.8rem,5.5vw,2.8rem);letter-spacing:-.015em}
+h2{font-weight:800;font-size:1.5rem;letter-spacing:-.01em}
+h3{font-weight:700;font-size:1.1rem}
+p{margin:0 0 1em;max-width:var(--measure)}
+ul,ol{max-width:var(--measure);padding-left:1.3em;margin:0 0 1em}
+li{margin:.25em 0}
+sup,sub{line-height:0}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+/* hero */
+.hero{background:var(--turf);color:#fff;padding:28px 0 26px;border-bottom:6px solid var(--turf-deep)}
+.hero .wrap{display:flex;gap:20px;align-items:center}
+.jersey{flex:none;width:92px;height:92px;border:4px solid #fff;border-radius:10px 10px 46px 46px;display:grid;place-items:center;
+  font-weight:900;font-style:italic;font-size:3.4rem;line-height:1}
+.hero h1{margin:0 0 .3em}
+.hero .lede{margin:0;font-size:1.05rem;color:#e4f0e2}
+.hero a{color:#fff}
+@media (max-width:520px){.hero .wrap{flex-direction:column;align-items:flex-start}.jersey{width:72px;height:72px;font-size:2.6rem}}
+
+/* pitch progress strip */
+.pitch{position:sticky;top:0;z-index:20;background:var(--turf-deep);padding:8px 0}
+.pitch .wrap{position:relative}
+.pitch-track{position:relative;height:34px;border:2px solid #fff;border-radius:4px;background:var(--turf)}
+.pitch-track::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid #fff}
+.pitch-track::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border:2px solid #fff;border-radius:50%}
+.pitch .pitch-mark{position:absolute;top:50%;width:14px;height:14px;min-height:0;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #fff;background:var(--turf-deep);padding:0;cursor:pointer}
+.pitch .pitch-mark::after{content:"";position:absolute;inset:-14px}
+.pitch .pitch-mark:hover{background:var(--turf)}
+.pitch .pitch-mark.on{background:var(--card-yellow);border-color:var(--card-yellow)}
+.pitch-ball{position:absolute;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#16221b 0 28%,#fff 30%);border:2px solid #16221b;pointer-events:none;transition:left .7s cubic-bezier(.3,.7,.2,1)}
+.pitch-label{color:#e4f0e2;font-size:.82rem;margin:4px 0 0;max-width:none}
+@media (prefers-reduced-motion:reduce){.pitch-ball{transition:none}}
+
+/* sections */
+.play{padding:30px 0 26px;border-bottom:2px solid var(--line)}
+.play>.wrap>h2{display:flex;gap:12px;align-items:center}
+.play .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--turf);color:#fff;display:grid;place-items:center;font-size:1rem;font-weight:800}
+.play.finished .n{background:var(--card-yellow);color:var(--ink)}
+.done-btn{margin-top:8px}
+
+/* buttons */
+button,.btn{font:inherit;font-weight:700;border-radius:8px;border:2px solid var(--turf-deep);background:#fff;color:var(--turf-deep);padding:9px 16px;min-height:44px;cursor:pointer}
+button:hover{background:var(--turf-wash)}
+button.primary{background:var(--turf-deep);color:#fff}
+button.primary:hover{background:var(--turf)}
+button[disabled]{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+
+/* callouts */
+.plain,.watch,.hands,.vid{border-radius:8px;padding:14px 16px;margin:16px 0;max-width:var(--measure)}
+.plain{background:var(--turf-wash);border-left:6px solid var(--turf)}
+.watch{background:var(--yellow-wash);border-left:6px solid var(--card-yellow)}
+.hands{border:2px dashed var(--turf);background:#fff}
+.vid{background:#f2f4f2;border:1px solid var(--line)}
+.callout-title{font-weight:800;margin:0 0 4px;display:block}
+.watch .callout-title::before{content:"";display:inline-block;width:12px;height:17px;background:var(--card-yellow);border:1.5px solid #8a6d00;border-radius:2px;margin-right:8px;vertical-align:-3px}
+.callout *:last-child{margin-bottom:0}
+.plain p:last-child,.watch p:last-child,.hands p:last-child,.vid p:last-child{margin-bottom:0}
+
+/* tables */
+table{border-collapse:collapse;margin:10px 0 18px;width:100%;max-width:var(--measure)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+@media (max-width:520px){table{font-size:.92rem}th,td{padding:6px 7px}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}
+.stats div{background:#fff;border:2px solid var(--line);border-radius:8px;padding:8px 10px}
+.stats span{display:block;font-size:.9rem;color:var(--ink-soft)}
+.stats b{font-size:1.15rem}
+th{background:var(--turf-wash)}
+.formula{font-size:1.25rem;font-weight:700;font-style:italic;background:#f5f7f4;border:2px solid var(--line);border-radius:8px;padding:10px 14px;display:inline-block;margin:6px 0}
+.v{position:relative;display:inline-block;font-style:italic}
+.v::before{content:"\2192";position:absolute;top:-.68em;left:.12em;font-size:.62em;line-height:1;font-style:normal}
+.nowrap{white-space:nowrap}
+
+/* worked example */
+.we{border:2px solid var(--turf);border-radius:10px;padding:14px 16px;margin:16px 0;max-width:var(--measure)}
+.we>.we-title{font-weight:800;margin:0 0 6px}
+.we .given{background:#f5f7f4;border-radius:6px;padding:8px 12px;margin:8px 0}
+.rs{display:none;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
+.rs.show{display:block}
+.rs .why{color:var(--ink-soft);font-size:.95rem}
+
+/* widgets */
+.widget{background:#f5f7f4;border:2px solid var(--line);border-radius:10px;padding:14px 16px;margin:16px 0;max-width:var(--measure)}
+.widget input,.widget select,.qcard input,.qcard select{font:inherit;border:2px solid #9bb09a;border-radius:8px;padding:8px 10px;min-height:44px;background:#fff;color:var(--ink)}
+.widget input{width:7.5em}.widget label{display:block;margin:4px 12px 4px 0}
+.dg{display:inline-block;min-width:.7em;text-align:center;font-size:1.6rem;font-weight:800;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0 1px;padding:0 3px}
+.dg.sig{background:var(--turf);color:#fff;border-radius:4px}
+.dg.no{color:#8a958d}
+.out{margin-top:10px}
+
+/* quiz */
+.qcard{border:2px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;max-width:var(--measure)}
+.qcard.solved{border-color:var(--good)}
+.qhead{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;color:var(--ink-soft);margin-bottom:6px}
+.qtext{font-weight:600;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font-weight:500;border-color:#9bb09a;color:var(--ink)}
+.opt.right{background:var(--good-wash);border-color:var(--good)}
+.opt.wrong{background:var(--red-wash);border-color:var(--red)}
+.fb{margin-top:10px;padding:10px 12px;border-radius:8px;display:none}
+.fb.ok{display:block;background:var(--good-wash);border-left:6px solid var(--good)}
+.fb.no{display:block;background:var(--amber-wash);border-left:6px solid #d98b00}
+.fb.hint{display:block;background:var(--yellow-wash);border-left:6px solid var(--card-yellow)}
+.fb p{margin:0 0 .5em}
+.sortrow{display:grid;grid-template-columns:1fr minmax(120px,170px);gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.sortrow select{width:100%}
+.sortrow .sfb{grid-column:1/-1;font-size:.95rem;margin-top:-2px}
+.sortrow.good .sfb{color:var(--good)}
+.sortrow.bad .sfb{color:#a35b00}
+@media (max-width:520px){.sortrow{grid-template-columns:1fr}}
+.steps{margin-top:10px;background:#f5f7f4;border-radius:8px;padding:10px 14px}
+
+/* can-do */
+.can{list-style:none;padding:0;max-width:none}
+.can li{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;border-top:1px solid var(--line);padding:10px 0}
+.can .conf{display:flex;gap:6px;flex-wrap:wrap}
+.can .conf button{padding:6px 10px;min-height:40px;font-size:.9rem;border-color:#9bb09a;color:var(--ink)}
+.can .conf button.sel-r{background:var(--red-wash);border-color:var(--red)}
+.can .conf button.sel-a{background:var(--amber-wash);border-color:#d98b00}
+.can .conf button.sel-g{background:var(--good-wash);border-color:var(--good)}
+@media (max-width:620px){.can li{grid-template-columns:1fr}}
+.results{background:var(--turf-wash);border-radius:10px;padding:14px 16px;max-width:var(--measure)}
+.results textarea{width:100%;min-height:150px;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;border:2px solid #9bb09a;border-radius:8px;padding:8px}
+footer{padding:24px 0 60px;color:var(--ink-soft);font-size:.95rem}
+footer p{max-width:none}
+
+/* index */
+.lesson-list{list-style:none;padding:0;max-width:none;display:grid;gap:12px}
+.lesson-list li{display:flex;gap:14px;align-items:center;border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin:0}
+.lesson-list .jn{flex:none;width:52px;height:52px;border:3px solid var(--turf);border-radius:8px 8px 26px 26px;display:grid;place-items:center;font-weight:900;font-style:italic;font-size:1.6rem;color:var(--turf-deep)}
+.lesson-list li.soon{opacity:.6}
+.lesson-list a{font-weight:800;font-size:1.1rem}
+.lesson-list small{display:block;color:var(--ink-soft);font-size:.92rem}
+
+@media print{.pitch,.done-btn,button{display:none!important}.rs{display:block!important}body{font-size:12pt}}
+
+/* online save bar */
+.syncbar{background:var(--yellow-wash);border-bottom:2px solid var(--card-yellow);padding:8px 0;font-size:.95rem}
+.syncbar .wrap{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.syncbar form{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+.syncbar input{font:inherit;border:2px solid #9bb09a;border-radius:8px;padding:6px 10px;min-height:44px;width:11em}
+.syncbar button{min-height:40px;padding:5px 12px}
+@media print{.syncbar{display:none!important}}
+.prevdone{background:var(--good-wash);border-left:6px solid var(--good);border-radius:6px;padding:6px 10px;margin:0 0 10px;font-size:.95rem}
+
+/* typed hands-on tables */
+.entry{width:100%;min-width:0;font:inherit;border:2px solid #9bb09a;border-radius:8px;padding:6px 8px;min-height:44px;background:#fff;color:var(--ink)}
+.entry.wide{min-height:84px;resize:vertical}
+table.fill td{padding:4px}
+.fillgrid{display:grid;gap:8px 12px;grid-template-columns:repeat(2,1fr);max-width:var(--measure);margin:10px 0}
+.fillgrid label{display:block;font-size:.92rem;color:var(--ink-soft)}
+@media (max-width:520px){.fillgrid{grid-template-columns:1fr}table.fill{font-size:.9rem}}
+@media print{.entry{border:1px solid #888}}
+
+/* figures */
+.fig,.gfig{margin:10px 0;max-width:430px}
+.gsvg{display:block;width:100%;height:auto;border:2px solid var(--line);border-radius:8px;background:#fff}
+.figcap{font-size:.92rem;color:var(--ink-soft);margin:-4px 0 14px;max-width:var(--measure)}
+details.model{border:2px solid var(--line);border-radius:8px;padding:8px 12px;margin:10px 0;max-width:var(--measure)}
+details.model summary{font-weight:700;cursor:pointer}
+.eqtable td:first-child{white-space:nowrap}
+.figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;max-width:100%;margin:10px 0}
+.figrow .fig{margin:0}
+
+</style>
+</head>
+<body data-lesson="l18" data-title="Lesson 18 Friction">
+<header class="hero"><div class="wrap">
+  <div class="jersey" aria-hidden="true">18</div>
+  <div>
+    <h1>Friction and the friction lab</h1>
+    <p class="lede">What friction depends on, what it does not depend on, and how to handle the Factors Affecting Friction lab and its write-up. About 75 minutes.</p>
+  </div>
+</div></header>
+<nav id="pitch" class="pitch" aria-label="Lesson progress"></nav>
+
+<main>
+<section class="play" id="start"><div class="wrap">
+  <h2>Before you start</h2>
+  <p>Have these ready:</p>
+  <ul>
+    <li>Calculator</li>
+    <li>Pencil and paper</li>
+    <li>Your Lab: Factors Affecting Friction handout from Google Classroom</li>
+  </ul>
+  <p>You need Lessons 14 and 15 (normal force, F = ma). The lab uses the same skills as the Kinematics labs: averages, percent difference, and a graph with a slope.</p>
+</div></section>
+
+<section class="play" id="s1" data-track><div class="wrap">
+  <h2><span class="n">1</span>What friction is</h2>
+  <p><b>Friction</b> is the force between two surfaces that touch, acting <b>parallel to the surfaces</b> and <b>against</b> the motion (or the attempt to move).</p>
+  <table>
+    <tr><th>Type</th><th>When</th><th>Size</th></tr>
+    <tr><td><b>Static</b> friction</td><td>The object is not moving yet</td><td>Matches your push, up to a maximum. Beyond that maximum the object starts to slide.</td></tr>
+    <tr><td><b>Kinetic</b> (sliding) friction</td><td>The object is sliding</td><td>F<sub>f</sub> = &mu;F<sub>n</sub> (usually a bit less than the starting maximum)</td></tr>
+  </table>
+  <div class="formula callout"><span class="callout-title">The friction model</span>
+    <p>F<sub>f</sub> = &mu; F<sub>n</sub></p>
+    <p>&mu; (the Greek letter &ldquo;mu&rdquo;) is the <b>coefficient of friction</b>. It has no units. It depends on the two surfaces (rubber on concrete is large, steel on ice is tiny).</p></div>
+  <p>In this simple model friction depends on the <b>normal force</b> and the <b>surfaces</b>. It does <b>not</b> depend on the speed or on the contact area.</p>
+
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s2" data-track><div class="wrap">
+  <h2><span class="n">2</span>How the lab works</h2>
+  <ul>
+    <li>Pull the block with a spring scale <b>at a steady speed</b>. Then a = 0, so the net force is zero and the <b>scale reading equals the friction force</b>.</li>
+    <li>For a block on a flat table, F<sub>n</sub> = F<sub>g</sub> = mg (weight of the block plus the added masses).</li>
+  </ul>
+<figure class="fig" style="margin:12px 0"><svg viewBox="0 0 220 200" role="img" aria-label="FBD: F n up, F g down, pull right and friction left, equal." style="max-width:260px;width:100%;background:#fff;border:1px solid #cfd8cc;border-radius:8px"><defs><marker id="ar" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c8372d"/></marker><marker id="ag" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d4a2b"/></marker></defs><rect x="101" y="91" width="18" height="18" fill="#e9efe6" stroke="#333"/><line x1="110" y1="100" x2="110" y2="50" stroke="#c8372d" stroke-width="3" marker-end="url(#ar)"/><text x="118" y="46" font-size="13" text-anchor="start" fill="#c8372d" font-weight="700">Fn</text><line x1="110" y1="100" x2="110" y2="150" stroke="#c8372d" stroke-width="3" marker-end="url(#ar)"/><text x="118" y="162" font-size="13" text-anchor="start" fill="#c8372d" font-weight="700">Fg</text><line x1="110" y1="100" x2="175" y2="100" stroke="#c8372d" stroke-width="3" marker-end="url(#ar)"/><text x="183" y="104" font-size="13" text-anchor="start" fill="#c8372d" font-weight="700">Fpull</text><line x1="110" y1="100" x2="45" y2="100" stroke="#c8372d" stroke-width="3" marker-end="url(#ar)"/><text x="37" y="104" font-size="13" text-anchor="end" fill="#c8372d" font-weight="700">Ff</text></svg><figcaption class="figcap">Pulled at a steady speed: pull = friction, and F n = F g.</figcaption></figure>  <table>
+    <tr><th>Part</th><th>What you change</th><th>What you expect</th></tr>
+    <tr><td>1. Starting vs sliding</td><td>Nothing: compare the force to start with the force to keep going</td><td>Starting force is a bit bigger</td></tr>
+    <tr><td>2. Speed</td><td>Slow vs fast (constant speed)</td><td>About the same friction</td></tr>
+    <tr><td>3. Surface area</td><td>Block flat vs on its side</td><td>About the same friction</td></tr>
+    <tr><td>4. Normal force</td><td>Add masses (&frac12; kg, 1 kg, 2 kg)</td><td>Friction increases in proportion to F<sub>n</sub> (a straight line through the origin)</td></tr>
+  </table>
+  <p><b>Technique tips:</b> pull horizontally and straight. Keep the speed as steady as you can. Take the reading while it is moving steadily, not at the start. Repeat each trial the number of times asked, and average.</p>
+
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s3" data-track><div class="wrap">
+  <h2><span class="n">3</span>Reading your data</h2>
+  <div class="we"><p class="we-title">Worked example 1 (Part 1): starting force averages 4.2 N and sliding force averages 3.1 N. Find the percent difference and decide whether they are really different.</p>
+    <div class="given">A = 4.2 N, B = 3.1 N. Use the percent-difference formula from your lab package (or |A &minus; B| &divide; average &times; 100).</div>
+    <div class="reveal">
+      <div class="rs"><b>Step 1.</b> |4.2 &minus; 3.1| = 1.1. Average = (4.2 + 3.1) &divide; 2 = 3.65.</div>
+      <div class="rs"><b>Step 2.</b> 1.1 &divide; 3.65 &times; 100 = <b>30%</b>.</div>
+      <div class="rs"><b>Step 3. Is it significant?</b> Compare the 30% with how much your repeated trials vary (for example &plusmn;0.2 N, about 5%). The difference is much bigger than the trial-to-trial scatter, so it is a <b>real</b> difference: it takes more force to get the block started.<div class="why">If the percent difference were about the same size as the scatter in your trials, you would say there is no significant difference (as for speed and surface area).</div></div>
+    </div></div>
+  <div class="we"><p class="we-title">Worked example 2 (Part 4): block 0.40 kg with added masses 0.50, 1.0 and 2.0 kg. Measured friction: 3.1 N, 4.8 N, 8.3 N. Find F<sub>n</sub> for each and the slope of F<sub>f</sub> vs F<sub>n</sub>.</p>
+    <div class="given">Total masses: 0.90, 1.40, 2.40 kg (block plus added mass). On a flat table F<sub>n</sub> = mg.</div>
+    <div class="reveal">
+      <div class="rs"><b>Step 1.</b> F<sub>n</sub> = 0.90 &times; 9.8 = 8.8 N; 1.40 &times; 9.8 = 13.7 N; 2.40 &times; 9.8 = 23.5 N.</div>
+      <div class="rs"><b>Step 2. Graph.</b> Plot F<sub>f</sub> (y) against F<sub>n</sub> (x). The points lie close to a straight line through the origin.</div>
+      <div class="rs"><b>Step 3. Slope.</b> Use two points on the <i>line</i>, far apart: slope = (8.3 &minus; 3.1) &divide; (23.5 &minus; 8.8) = 5.2 &divide; 14.7 = <b>0.35</b>.</div>
+      <div class="rs"><b>Step 4. What the slope means.</b> The slope is &Delta;F<sub>f</sub> &divide; &Delta;F<sub>n</sub> = &mu;, the <b>coefficient of kinetic friction</b>. It has no units.<div class="why">A straight line through the origin means F<sub>f</sub> is <b>directly proportional</b> to F<sub>n</sub>: double F<sub>n</sub> and friction doubles.</div></div>
+    </div></div>
+<div class="fig" data-fig='{"x":[0,25,5],"y":[0,10,2],"xl":"normal force F_n (N)","yl":"friction force F_f (N)","alt":"Friction force against normal force: points lie close to a straight line through the origin, slope about 0.35.","series":[{"pts":[[0,0],[25,8.85]],"dash":"5 4","color":"#8aa08f"},{"pts":[[8.8,3.1],[13.7,4.8],[23.5,8.3]],"w":0}],"marks":[{"x":8.8,"y":3.1,"label":"","dx":0,"dy":0},{"x":13.7,"y":4.8,"label":"","dx":0,"dy":0},{"x":23.5,"y":8.3,"label":"","dx":0,"dy":0},{"x":20,"y":7.08,"label":"slope = rise/run = 0.35","dx":-8,"dy":-14,"anchor":"end","color":"#1d4a2b"}]}'></div><p class="figcap">Worked example 2: friction against normal force. The dashed line has slope 0.35.</p>  <div class="we"><p class="we-title">Worked example 3: a 20 kg crate is pulled over a floor with &mu; = 0.30. (a) What pull keeps it moving at constant speed? (b) What is its acceleration with a pull of 80 N?</p>
+    <div class="given">F<sub>n</sub> = mg = 20 &times; 9.8 = 196 N. F<sub>f</sub> = &mu;F<sub>n</sub> = 0.30 &times; 196 = 58.8 N.</div>
+    <div class="reveal">
+      <div class="rs"><b>(a)</b> Constant speed: pull = F<sub>f</sub> = <b>59 N</b>.</div>
+      <div class="rs"><b>(b)</b> F<sub>net</sub> = 80 &minus; 58.8 = 21.2 N, so a = 21.2 &divide; 20 = <b>1.1 m/s&sup2;</b>.</div>
+    </div></div>
+
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s4" data-track><div class="wrap">
+  <h2><span class="n">4</span>Knowledge check</h2>
+  <div id="q1"></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s5" data-track><div class="wrap">
+  <h2><span class="n">5</span>Write-up practice</h2>
+  <p>The write-up asks you to discuss five points. Each answer should have a <b>claim</b>, <b>evidence from your numbers</b>, and a <b>reason</b>. Try the surface-area point below, using the pretend data: large area average 3.0 N, small area average 3.1 N.</p>
+  <label for="fw">Does surface area have a significant effect on friction? Use the numbers and explain.</label>
+  <textarea id="fw" class="entry wide" rows="4" data-field="fric_area" data-flabel="Friction write-up: surface area"></textarea>
+  <details class="model"><summary>Show a model answer</summary><p>No. The average friction was 3.0 N with the large area and 3.1 N with the small area, a difference of about 3%, which is within the scatter of my trials. So surface area has no significant effect. The reason is that friction depends on the normal force and the type of surfaces: a smaller area means more pressure on each bit of surface, but less surface in contact, and the two effects balance.</p></details>
+  <label for="fs">Describe how your graph shows the type of relationship between F<sub>n</sub> and F<sub>f</sub>, and say what the slope represents:</label>
+  <textarea id="fs" class="entry wide" rows="4" data-field="fric_slope" data-flabel="Friction write-up: graph and slope"></textarea>
+  <details class="model"><summary>Show a model answer</summary><p>The points follow a straight line through the origin, so friction is directly proportional to the normal force (F<sub>f</sub> = &mu;F<sub>n</sub>). The slope of the line is &Delta;F<sub>f</sub> &divide; &Delta;F<sub>n</sub> = &mu;, the coefficient of kinetic friction for the block and the table. Mine was about 0.35, with no units.</p></details>
+  <p><b>Write-up checklist:</b> the data sheet is included; graph has a title, axis labels with units, and a line of best fit; slope is shown with the points used; each of the five discussion points has a claim, number and reason.</p>
+
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s6" data-track><div class="wrap">
+  <h2><span class="n">6</span>Google Classroom</h2>
+  <p>Open <b>Lab &ndash; Factors Affecting Friction</b>. Use this lesson to check your technique before the lab and your reasoning for the write-up after it.</p>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s18" data-track><div class="wrap">
+  <h2><span class="n">18</span>How did that go?</h2>
+  <p>Rate yourself honestly. These ratings are for planning the next step, not for marks.</p>
+  <ul class="can">
+    <li data-id="c1">I can explain static and kinetic friction and what &mu; means.</li>
+    <li data-id="c2">I can say what friction does and does not depend on, and why the spring scale reading equals F<sub>f</sub> at steady speed.</li>
+    <li data-id="c3">I can find F<sub>n</sub> for added masses and plot F<sub>f</sub> against F<sub>n</sub>.</li>
+    <li data-id="c4">I can find the slope and say what it represents.</li>
+    <li data-id="c5">I can compare averages with a percent difference and decide whether a difference is significant.</li>
+  </ul>
+  <h3>Your results</h3>
+  <div id="results" class="results"></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+</main>
+<footer><div class="wrap"><p>These lessons support, and do not replace, the material from your teacher. Next: Lesson 19, the Forces review.</p></div></footer>
+
+
+
+<script>
+window.LESSON_INIT=function(SPH){
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function rndI(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function g(x,n){return Number(x.toPrecision(n));}
+
+SPH.quiz('q1',[
+ {id:'p1',type:'mc',tag:'static versus kinetic',prompt:'Which is usually larger for the same block?',hint:'Which is harder: getting it moving or keeping it moving?',
+  options:[['The force to start it moving','Yes. The maximum static friction is usually larger.',true],['The force to keep it sliding','That is usually the smaller one.',false],['They are always identical','Usually the starting force is a bit larger.',false],['It depends on the speed','Speed does not change the kinetic friction here.',false]]},
+ {id:'p2',type:'mc',tag:'speed',prompt:'You pull a block at a slow steady speed, then at a faster steady speed. What do you expect the friction to be?',hint:'In this model friction depends on F<sub>n</sub> and the surfaces.',
+  options:[['Much larger at the faster speed','Not in this model.',false],['About the same','Yes.',true],['Much smaller at the faster speed','Not in this model.',false],['Zero at constant speed','There is friction, balanced by the pull.',false]]},
+ {id:'p3',type:'mc',tag:'surface area',prompt:'You flip the block onto its side (smaller contact area), same weight. What do you expect?',hint:'Same F<sub>n</sub>, same surfaces.',
+  options:[['Friction is much smaller','In this model, area does not matter.',false],['Friction is about the same','Yes.',true],['Friction is much larger','No.',false],['The block cannot move','It moves fine.',false]]},
+ {id:'p4',type:'mc',tag:'normal force',prompt:'You double the normal force by adding mass. What happens to the sliding friction?',hint:'F<sub>f</sub> = &mu;F<sub>n</sub>.',
+  options:[['It doubles','Yes. Directly proportional.',true],['It is halved','More F<sub>n</sub> means more friction.',false],['It stays the same','It depends on F<sub>n</sub>.',false],['It becomes four times bigger','That is a square law, not this one.',false]]},
+ {id:'p5',type:'mc',tag:'slope',prompt:'On a graph of F<sub>f</sub> (y) against F<sub>n</sub> (x), what does the slope represent?',hint:'rise &divide; run.',
+  options:[['The coefficient of friction, &mu;','Yes: &Delta;F<sub>f</sub> &divide; &Delta;F<sub>n</sub> = &mu;.',true],['The weight of the block','No.',false],['The speed','No.',false],['The acceleration','No.',false]]},
+ {id:'p6',type:'mc',tag:'why the scale reads F_f',prompt:'Why does the spring scale reading equal the friction force during the lab?',hint:'Think of the net force.',
+  options:[['Because the block moves at constant speed, so the net force is zero and pull = friction','Yes.',true],['Because friction is always 1 N','No.',false],['Because the scale measures weight','It reads the pull.',false],['Because the block accelerates','It does not, if the speed is constant.',false]]},
+ {id:'p7',type:'sort',tag:'what affects friction',prompt:'Does the size of the friction force (for a sliding block) depend on each of these?',cats:['Yes, it matters','No, not in this model'],
+  items:[['The normal force',0,'F<sub>f</sub> = &mu;F<sub>n</sub>.'],['The types of surfaces (&mu;)',0,'&mu; depends on the pair of surfaces.'],['The sliding speed',1,'About the same at slow and fast speeds.'],['The contact area',1,'No significant effect.']]},
+ {id:'p8',type:'num',tag:'F = mu Fn',hints:['F<sub>n</sub> = mg on a level floor.','F<sub>f</sub> = &mu;F<sub>n</sub>.'],
+  gen:function(){var m=pick([5.0,10.0,20.0,35.0]),mu=pick([0.20,0.30,0.45,0.60]);var Ff=mu*m*9.8;
+   return {prompt:'A <b>'+m.toFixed(1)+' kg</b> crate slides on a level floor with &mu; = <b>'+mu.toFixed(2)+'</b>. What is the friction force?',unit:'N',ans:Ff,tol:0.01,traps:[{v:mu*m,msg:'F<sub>n</sub> = mg, not m. Multiply by 9.8 first.'}],steps:'<p>F<sub>n</sub> = '+m.toFixed(1)+' &times; 9.8 = '+g(m*9.8,3)+' N</p><p>F<sub>f</sub> = '+mu.toFixed(2)+' &times; '+g(m*9.8,3)+' = <b>'+g(Ff,3)+' N</b></p>'};}},
+ {id:'p9',type:'num',tag:'find mu',hints:['&mu; = F<sub>f</sub> &divide; F<sub>n</sub>.','F<sub>n</sub> = mg.'],
+  gen:function(){var m=pick([2.0,4.0,6.0]),mu=pick([0.25,0.35,0.50]);var Ff=mu*m*9.8;
+   return {prompt:'A <b>'+m.toFixed(1)+' kg</b> block is pulled at a constant speed along a table by a horizontal force of <b>'+g(Ff,3)+' N</b>. What is the coefficient of kinetic friction?',unit:'',ans:mu,tol:0.01,traps:[{v:Ff/m,msg:'Divide by the normal force (mg), not just the mass.'}],steps:'<p>Constant speed: F<sub>f</sub> = '+g(Ff,3)+' N; F<sub>n</sub> = '+m.toFixed(1)+' &times; 9.8 = '+g(m*9.8,3)+' N</p><p>&mu; = '+g(Ff,3)+' &divide; '+g(m*9.8,3)+' = <b>'+mu.toFixed(2)+'</b></p>'};}},
+ {id:'p10',type:'num',tag:'slope from data',hints:['slope = (y<sub>2</sub> &minus; y<sub>1</sub>) &divide; (x<sub>2</sub> &minus; x<sub>1</sub>)'],
+  gen:function(){var x1=pick([5.0,8.0,10.0]),x2=pick([20.0,25.0]),mu=pick([0.30,0.40,0.55]);var y1=x1*mu,y2=x2*mu;
+   return {prompt:'Two points on your friction graph are (F<sub>n</sub> = <b>'+x1.toFixed(1)+' N</b>, F<sub>f</sub> = <b>'+y1.toFixed(2)+' N</b>) and (F<sub>n</sub> = <b>'+x2.toFixed(1)+' N</b>, F<sub>f</sub> = <b>'+y2.toFixed(2)+' N</b>). What is the slope?',unit:'',ans:mu,tol:0.01,traps:[{v:(x2-x1)/(y2-y1),msg:'Slope is rise over run: F<sub>f</sub> change divided by F<sub>n</sub> change.'}],steps:'<p>slope = ('+y2.toFixed(2)+' &minus; '+y1.toFixed(2)+') &divide; ('+x2.toFixed(1)+' &minus; '+x1.toFixed(1)+') = <b>'+mu.toFixed(2)+'</b></p>'};}},
+ {id:'p11',type:'num',tag:'percent difference',hints:['|A &minus; B| &divide; ((A + B) &divide; 2) &times; 100'],
+  gen:function(){var A=pick([3.0,4.2,5.0,6.4]),B=pick([2.8,3.1,4.0,5.5]);if(A===B)B=B-0.4;var d=Math.abs(A-B)/((A+B)/2)*100;
+   return {prompt:'The average starting force is <b>'+A.toFixed(1)+' N</b> and the average sliding force is <b>'+B.toFixed(1)+' N</b>. What is the percent difference?',unit:'%',ans:d,tol:0.02,traps:[{v:Math.abs(A-B),msg:'Divide by the average and multiply by 100.'}],steps:'<p>|'+A.toFixed(1)+' &minus; '+B.toFixed(1)+'| = '+g(Math.abs(A-B),3)+'; average = '+g((A+B)/2,4)+'</p><p>% difference = <b>'+g(d,3)+' %</b></p>'};}},
+ {id:'p12',type:'num',tag:'acceleration',hints:['F<sub>net</sub> = pull &minus; F<sub>f</sub>.','a = F<sub>net</sub> &divide; m.'],
+  gen:function(){var m=pick([10,20,30]),mu=pick([0.20,0.30]),P=pick([80,100,120]);var Ff=mu*m*9.8;
+   return {prompt:'A <b>'+m+' kg</b> crate on a floor with &mu; = <b>'+mu.toFixed(2)+'</b> is pulled horizontally with <b>'+P+' N</b>. What is its acceleration?',unit:'m/s&sup2;',ans:(P-Ff)/m,tol:0.01,traps:[{v:P/m,msg:'Subtract friction first.'}],steps:'<p>F<sub>f</sub> = '+mu.toFixed(2)+' &times; '+m+' &times; 9.8 = '+g(Ff,3)+' N</p><p>a = ('+P+' &minus; '+g(Ff,3)+') &divide; '+m+' = <b>'+g((P-Ff)/m,3)+' m/s&sup2;</b></p>'};}}
+]);
+
+};
+
+(function(){
+'use strict';
+var LID=document.body.getAttribute('data-lesson')||'x';
+var LTITLE=document.body.getAttribute('data-title')||document.title;
+var KEY='sph3u-kin-'+LID;
+var S={q:{},c:{},d:{}};
+try{var raw=window.localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);S.q=o.q||{};S.c=o.c||{};S.d=o.d||{};S.t=o.t||0;}}catch(e){}
+function save(opts){S.t=Date.now();try{window.localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}if(!(opts&&opts.local))cloudSchedule();}
+var REG=[];
+
+function h(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function rnd(a,b,dp){var p=Math.pow(10,dp||0);return Math.round((a+Math.random()*(b-a))*p)/p;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function fmtSd(x,n){var s=x.toPrecision(n);if(/e/i.test(s)){var p=s.split(/e/i);return p[0]+'&times;10<sup>'+parseInt(p[1],10)+'</sup>';}return s;}
+function parseNum(s){
+  s=String(s).trim().replace(/[−–—]/g,'-').replace(/\s+/g,'').replace(/,/g,'.');
+  s=s.replace(/[x×]10\^?\(?([+-]?\d+)\)?$/i,'e$1');
+  if(s===''||!/^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(s))return NaN;
+  return Number(s);
+}
+function sigMask(str){
+  var s=String(str).trim().replace(/[−–]/g,'-').replace(/^[+-]/,'').replace(/,/g,'.');
+  var parts=s.split(/e|×|x/i);var mant=parts[0];
+  if(!/^\d*\.?\d*$/.test(mant)||!/\d/.test(mant))return null;
+  var chars=mant.split('');var hasDot=mant.indexOf('.')>=0;
+  var first=-1,last=-1,i;
+  for(i=0;i<chars.length;i++){if(/[1-9]/.test(chars[i])){first=i;break;}}
+  if(first<0){return chars.map(function(c){return {ch:c,sig:false};});}
+  if(hasDot){for(i=chars.length-1;i>=0;i--){if(/\d/.test(chars[i])){last=i;break;}}}
+  else{for(i=chars.length-1;i>=0;i--){if(/[1-9]/.test(chars[i])){last=i;break;}}}
+  var amb=(!hasDot&&/0$/.test(mant));
+  var m=chars.map(function(c,idx){return {ch:c,sig:(/\d/.test(c)&&idx>=first&&idx<=last)};});
+  m.ambiguous=amb;return m;
+}
+function sigCount(str){var m=sigMask(str);if(!m)return NaN;return m.filter(function(x){return x.sig;}).length;}
+window.SPH={sigCount:sigCount,sigMask:sigMask,fmtSd:fmtSd};
+
+/* ---------- stats ---------- */
+function rec(q,ok){
+  var s=S.q[q.id]||(S.q[q.id]={tries:0,first:false,done:false,tag:q.tag||''});
+  if(s.done)return s;
+  s.tries++;if(ok){s.done=true;s.first=(s.tries===1);}
+  save();updateResults();return s;
+}
+
+/* ---------- question types ---------- */
+function mkFb(){var f=h('div','fb');f.setAttribute('role','status');f.setAttribute('aria-live','polite');return f;}
+
+function renderMC(card,q){
+  card.appendChild(h('div','qtext',q.prompt));
+  var list=h('div','opts');var fb=mkFb();
+  q.options.forEach(function(o){
+    var b=h('button','opt',o[0]);b.type='button';
+    b.addEventListener('click',function(){
+      var st=S.q[q.id];
+      if(!(st&&st.done))rec(q,!!o[2]);
+      b.classList.add(o[2]?'right':'wrong');
+      fb.className='fb '+(o[2]?'ok':'no');
+      fb.innerHTML='<p><b>'+(o[2]?'Yes.':'Not quite.')+'</b> '+o[1]+'</p>';
+      if(o[2])card.classList.add('solved');
+    });
+    list.appendChild(b);
+  });
+  card.appendChild(list);
+  if(q.hint){
+    var row=h('div','row');var hb=h('button','','Hint');hb.type='button';
+    hb.addEventListener('click',function(){fb.className='fb hint';fb.innerHTML='<p><b>Hint:</b> '+q.hint+'</p>';});
+    row.appendChild(hb);card.appendChild(row);
+  }
+  card.appendChild(fb);
+}
+
+function renderNum(card,q){
+  var inst,hintIdx=0,wrongCount=0;
+  var promptEl=h('div','qtext','');card.appendChild(promptEl);
+  var row=h('div','row');
+  var inp=h('input');inp.type='text';inp.setAttribute('inputmode','decimal');inp.setAttribute('autocomplete','off');inp.setAttribute('aria-label','Your answer');
+  var unit=h('span','','');
+  var chk=h('button','primary','Check');chk.type='button';
+  row.appendChild(inp);row.appendChild(unit);row.appendChild(chk);card.appendChild(row);
+  var row2=h('div','row');var hintB=null;
+  if(q.hints&&q.hints.length){hintB=h('button','','Hint');hintB.type='button';row2.appendChild(hintB);}
+  var newB=h('button','','Try new numbers');newB.type='button';
+  if(q.random!==false)row2.appendChild(newB);
+  card.appendChild(row2);
+  var fb=mkFb();card.appendChild(fb);
+  var stepsB=h('button','','Show the steps');stepsB.type='button';stepsB.style.display='none';
+  var stepsEl=h('div','steps');stepsEl.style.display='none';
+  card.appendChild(stepsB);card.appendChild(stepsEl);
+  function load(){
+    inst=q.gen();promptEl.innerHTML=inst.prompt;unit.innerHTML=inst.unit||'';
+    inp.value='';fb.className='fb';fb.innerHTML='';hintIdx=0;wrongCount=0;
+    stepsEl.style.display='none';stepsEl.innerHTML='';stepsB.style.display='none';
+    inp.disabled=false;
+  }
+  function close(a,b){var t=(inst.abs!=null)?inst.abs:Math.abs(b)*(inst.tol||0.02);return Math.abs(a-b)<=t;}
+  function check(){
+    var v=parseNum(inp.value);
+    if(isNaN(v)){fb.className='fb no';fb.innerHTML='<p>Type a number (for example 12.5 or -3.2). Leave the units off, they are shown beside the box.</p>';return;}
+    var ok=close(v,inst.ans),msg='';
+    if(ok&&inst.sd){
+      var sc=sigCount(inp.value);
+      if(sc!==inst.sd){ok=false;msg='Your value is right, but the answer needs <b>'+inst.sd+' significant digits</b> and you gave '+sc+'. Round (or add a zero) to fix that.';}
+    }
+    var st=S.q[q.id];var counted=!(st&&st.done);
+    if(ok){
+      if(counted)rec(q,true);
+      card.classList.add('solved');
+      fb.className='fb ok';fb.innerHTML='<p><b>Yes.</b> '+(inst.okmsg||'That matches.')+'</p>';
+      stepsB.style.display='';stepsB.textContent='Show the steps';
+    }else{
+      if(counted)rec(q,false);
+      wrongCount++;
+      if(!msg&&inst.traps){inst.traps.forEach(function(t){if(!msg&&close(v,t.v))msg=t.msg;});}
+      if(!msg)msg='That is not the value I get. Check the units and the signs, then try again. Use the hint if you are stuck.';
+      fb.className='fb no';fb.innerHTML='<p><b>Not quite.</b> '+msg+'</p>';
+      stepsB.style.display='';stepsB.textContent='Show the steps';
+    }
+  }
+  chk.addEventListener('click',check);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  if(hintB)hintB.addEventListener('click',function(){
+    var hs=q.hints;var t=hs[Math.min(hintIdx,hs.length-1)];hintIdx++;
+    fb.className='fb hint';fb.innerHTML='<p><b>Hint '+Math.min(hintIdx,hs.length)+' of '+hs.length+':</b> '+t+'</p>';
+  });
+  newB.addEventListener('click',load);
+  stepsB.addEventListener('click',function(){
+    if(stepsEl.style.display==='none'){stepsEl.innerHTML=inst.steps||'';stepsEl.style.display='block';stepsB.textContent='Hide the steps';}
+    else{stepsEl.style.display='none';stepsB.textContent='Show the steps';}
+  });
+  load();
+}
+
+function renderSort(card,q){
+  card.appendChild(h('div','qtext',q.prompt));
+  var rows=[];var box=h('div');
+  q.items.forEach(function(it){
+    var r=h('div','sortrow');r.appendChild(h('div','',it[0]));
+    var sel=h('select');sel.setAttribute('aria-label',it[0]);
+    var o0=h('option','','Choose...');o0.value='-1';sel.appendChild(o0);
+    q.cats.forEach(function(c,i){var o=h('option','',c);o.value=String(i);sel.appendChild(o);});
+    r.appendChild(sel);var sfb=h('div','sfb','');r.appendChild(sfb);box.appendChild(r);rows.push({r:r,sel:sel,sfb:sfb,it:it});
+  });
+  card.appendChild(box);
+  var row=h('div','row');var chk=h('button','primary','Check my answers');chk.type='button';row.appendChild(chk);card.appendChild(row);
+  var fb=mkFb();card.appendChild(fb);
+  chk.addEventListener('click',function(){
+    var all=true,missing=false;
+    rows.forEach(function(x){
+      var v=parseInt(x.sel.value,10);
+      if(v<0){missing=true;}
+      var ok=(v===x.it[1]);if(!ok)all=false;
+      x.r.className='sortrow '+(v<0?'':(ok?'good':'bad'));
+      x.sfb.innerHTML=v<0?'':(ok?('Right. '+x.it[2]):('Not this one. '+x.it[2]));
+    });
+    if(missing){fb.className='fb no';fb.innerHTML='<p>Choose a category for every row, then check again.</p>';return;}
+    var st=S.q[q.id];if(!(st&&st.done))rec(q,all);
+    if(all){card.classList.add('solved');fb.className='fb ok';fb.innerHTML='<p><b>All correct.</b></p>';}
+    else{fb.className='fb no';fb.innerHTML='<p><b>Some are off.</b> Read the note under each red row, change them, and check again.</p>';}
+  });
+}
+
+function quiz(id,qs){
+  var box=document.getElementById(id);if(!box)return;
+  qs.forEach(function(q,i){
+    REG.push({id:q.id,tag:q.tag||'',n:i+1,box:id});
+    var card=h('div','qcard');
+    var head=h('div','qhead','<span>Question '+(i+1)+' of '+qs.length+'</span><span>'+(box.getAttribute('data-hide-tags')?'':(q.tag||''))+'</span>');
+    card.appendChild(head);
+    var prev=S.q[q.id];
+    if(prev&&prev.done){
+      var tn=prev.first?'right on the first try':'finished after '+prev.tries+' tries';
+      card.appendChild(h('p','prevdone','<b>Done before</b> ('+tn+'). Try it again for practice.'));
+    }
+    if(q.type==='mc')renderMC(card,q);else if(q.type==='num')renderNum(card,q);else if(q.type==='sort')renderSort(card,q);
+    box.appendChild(card);
+  });
+  updateResults();
+}
+window.SPH.quiz=quiz;
+
+/* ---------- reveal steps ---------- */
+function setupReveal(){
+  var items=document.querySelectorAll('.reveal');
+  Array.prototype.forEach.call(items,function(rv){
+    var steps=rv.querySelectorAll('.rs');var shown=0;
+    var row=h('div','row');
+    var nb=h('button','primary','');nb.type='button';
+    var ab=h('button','','Show all steps');ab.type='button';
+    function upd(){
+      if(shown>=steps.length){row.style.display='none';return;}
+      nb.textContent=shown===0?'Try it first, then show step 1':'Show step '+(shown+1)+' of '+steps.length;
+    }
+    nb.addEventListener('click',function(){steps[shown].classList.add('show');shown++;upd();});
+    ab.addEventListener('click',function(){Array.prototype.forEach.call(steps,function(s){s.classList.add('show');});shown=steps.length;upd();});
+    row.appendChild(nb);row.appendChild(ab);rv.appendChild(row);upd();
+  });
+}
+
+/* ---------- widgets ---------- */
+function widgetSigs(el){
+  el.innerHTML='<label>Type any number: <input type="text" value="0.00450" aria-label="A number" autocomplete="off"></label><div class="out" aria-live="polite"></div>';
+  var inp=el.querySelector('input'),out=el.querySelector('.out');
+  function upd(){
+    var m=sigMask(inp.value);
+    if(!m){out.innerHTML='<p>Type a plain number such as 0.0450, 3.00, 1500 or 1500.</p>';return;}
+    var n=m.filter(function(x){return x.sig;}).length;
+    var html=m.map(function(x){return '<span class="dg '+(x.sig?'sig':'no')+'">'+x.ch+'</span>';}).join('');
+    out.innerHTML='<div>'+html+'</div><p><b>'+n+' significant digit'+(n===1?'':'s')+'.</b> Green digits count. Grey digits are only holding the decimal place.'+(m.ambiguous?' <br>The zeros at the end of a whole number are unclear. Writing it in scientific notation (for example 1.5&times;10<sup>3</sup>) shows exactly how many count.':'')+'</p>';
+  }
+  inp.addEventListener('input',upd);upd();
+}
+function widgetKmh(el){
+  el.innerHTML='<div class="row"><label>Speed: <input type="text" value="54" inputmode="decimal" aria-label="Speed value"></label><label><select aria-label="Direction of conversion"><option value="a">km/h to m/s</option><option value="b">m/s to km/h</option></select></label></div><div class="out" aria-live="polite"></div>';
+  var inp=el.querySelector('input'),sel=el.querySelector('select'),out=el.querySelector('.out');
+  function upd(){
+    var v=parseNum(inp.value);if(isNaN(v)){out.innerHTML='<p>Type a number.</p>';return;}
+    if(sel.value==='a'){
+      var r=v*1000/3600;
+      out.innerHTML='<p>'+v+' km/h &times; <span class="nowrap">(1000 m &divide; 1 km)</span> &times; <span class="nowrap">(1 h &divide; 3600 s)</span> = <b>'+Number(r.toPrecision(4))+' m/s</b></p><p>Shortcut: divide by 3.6. The number gets smaller.</p>';
+    }else{
+      var r2=v*3600/1000;
+      out.innerHTML='<p>'+v+' m/s &times; <span class="nowrap">(1 km &divide; 1000 m)</span> &times; <span class="nowrap">(3600 s &divide; 1 h)</span> = <b>'+Number(r2.toPrecision(4))+' km/h</b></p><p>Shortcut: multiply by 3.6. The number gets bigger.</p>';
+    }
+  }
+  inp.addEventListener('input',upd);sel.addEventListener('change',upd);upd();
+}
+function widgetRearr(el){
+  var forms=JSON.parse(el.getAttribute('data-forms'));var title=el.getAttribute('data-title')||'Start from';
+  var start=el.getAttribute('data-start');
+  el.innerHTML='<p><b>'+title+'</b> <span class="formula">'+start+'</span></p><p>What do you need to find?</p><div class="row"></div><div class="out" aria-live="polite"></div>';
+  var row=el.querySelector('.row'),out=el.querySelector('.out');
+  Object.keys(forms).forEach(function(k){
+    var b=h('button','',k);b.type='button';
+    b.addEventListener('click',function(){out.innerHTML='<p><span class="formula">'+forms[k][0]+'</span></p><p>'+forms[k][1]+'</p>';});
+    row.appendChild(b);
+  });
+}
+
+function widgetTrip(el){
+  el.innerHTML='<div class="row"><label>Out, east (m) <input type="text" data-k="o" value="30" inputmode="decimal"></label><label>Back, west (m) <input type="text" data-k="b" value="18" inputmode="decimal"></label><label>Time (s) <input type="text" data-k="t" value="8.0" inputmode="decimal"></label></div><div class="out" aria-live="polite"></div>';
+  var ins=el.querySelectorAll('input'),out=el.querySelector('.out');
+  function upd(){
+    var o=parseNum(ins[0].value),b=parseNum(ins[1].value),t=parseNum(ins[2].value);
+    if(isNaN(o)||isNaN(b)||isNaN(t)||t<=0||o<0||b<0){out.innerHTML='<p>Enter positive numbers for each box.</p>';return;}
+    var dist=o+b,disp=o-b,sp=dist/t,vel=disp/t;
+    var dir=function(x){return x>0?' [E]':(x<0?' [W]':'');};
+    var f=function(x){return Number(Math.abs(x).toPrecision(3));};
+    out.innerHTML='<p>East is positive.</p><div class="stats"><div><span>Distance</span><b>'+f(dist)+' m</b></div><div><span>Average speed</span><b>'+f(sp)+' m/s</b></div><div><span>Displacement</span><b>'+f(disp)+' m'+dir(disp)+'</b></div><div><span>Average velocity</span><b>'+f(vel)+' m/s'+dir(vel)+'</b></div></div><p>'+(disp===0?'You finished where you started, so the displacement and the velocity are zero.':(o>=b?'Distance is larger than the size of the displacement because of the turn-around.':'You ended up west of the start, so the displacement is west.'))+'</p>';
+  }
+  Array.prototype.forEach.call(ins,function(i){i.addEventListener('input',upd);});upd();
+}
+function setupWidgets(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-widget]'),function(el){
+    var w=el.getAttribute('data-widget');
+    if(w==='sigs')widgetSigs(el);else if(w==='kmh')widgetKmh(el);else if(w==='rearr')widgetRearr(el);else if(w==='trip')widgetTrip(el);else if(w==='bigfive')widgetBigFive(el);else if(w==='secant')widgetSecant(el);else if(w==='proj')widgetProj(el);
+  });
+}
+
+/* ---------- progress strip, sections ---------- */
+var plays=[],ball=null,marks=[],pitchLabel=null;
+function setupProgress(){
+  plays=Array.prototype.slice.call(document.querySelectorAll('.play[data-track]'));
+  var nav=document.getElementById('pitch');if(!nav||!plays.length)return;
+  nav.innerHTML='<div class="wrap"><div class="pitch-track"></div><p class="pitch-label"></p></div>';
+  var track=nav.querySelector('.pitch-track');pitchLabel=nav.querySelector('.pitch-label');
+  plays.forEach(function(p,i){
+    var pos=(i+1)/(plays.length+1)*100;
+    var m=h('button','pitch-mark');m.type='button';m.style.left=pos+'%';
+    var t=p.querySelector('h2');m.setAttribute('aria-label','Go to '+(t?t.textContent:'section '+(i+1)));
+    m.addEventListener('click',function(){p.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+    track.appendChild(m);marks.push(m);
+    var db=p.querySelector('.done-btn');
+    if(db){
+      db.addEventListener('click',function(){
+        S.d[p.id]=!S.d[p.id];save();refreshProgress();
+        if(S.d[p.id]&&plays[i+1]){plays[i+1].scrollIntoView({behavior:'smooth',block:'start'});}
+      });
+    }
+  });
+  ball=h('div','pitch-ball');ball.style.left='3%';track.appendChild(ball);
+  refreshProgress();
+}
+function refreshProgress(){
+  if(!plays.length)return;var done=0;
+  plays.forEach(function(p,i){
+    var d=!!S.d[p.id];if(d)done++;
+    p.classList.toggle('finished',d);marks[i].classList.toggle('on',d);
+    var db=p.querySelector('.done-btn');if(db)db.textContent=d?'Marked as done (tap to undo)':'I finished this part';
+  });
+  var frac=done/plays.length;ball.style.left=(3+frac*94)+'%';
+  pitchLabel.textContent=done+' of '+plays.length+' parts finished';
+}
+
+/* ---------- can-do checklist ---------- */
+function setupCan(){
+  Array.prototype.forEach.call(document.querySelectorAll('.can li'),function(li){
+    var id=li.getAttribute('data-id');
+    var txt=li.innerHTML;li.innerHTML='<span>'+txt+'</span><span class="conf"></span>';
+    var conf=li.querySelector('.conf');
+    [['r','Not yet'],['a','Getting there'],['g','Got it']].forEach(function(o){
+      var b=h('button','',o[1]);b.type='button';b.setAttribute('data-v',o[0]);
+      b.addEventListener('click',function(){S.c[id]=o[0];save();paintCan();updateResults();});
+      conf.appendChild(b);
+    });
+  });
+  paintCan();
+}
+function paintCan(){
+  Array.prototype.forEach.call(document.querySelectorAll('.can li'),function(li){
+    var id=li.getAttribute('data-id');
+    Array.prototype.forEach.call(li.querySelectorAll('.conf button'),function(b){
+      var v=b.getAttribute('data-v');b.className=(S.c[id]===v)?('sel-'+v):'';
+    });
+  });
+}
+
+
+/* ---------- online save (Google Sheet via Apps Script; optional) ---------- */
+var CFG=window.SPH_CONFIG||{};
+var CLOUD=!!(CFG.url&&CFG.key)&&LID!=='index';
+var NAMEKEY='sph3u-kin-name';
+var cName='',cPulled=false,cPulling=false,cTimer=null,cDirty=false,cStatus='';
+try{cName=window.localStorage.getItem(NAMEKEY)||'';}catch(e){}
+function cleanName(v){return String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,20);}
+function cloudCall(params){
+  var u=CFG.url+(CFG.url.indexOf('?')>=0?'&':'?')+Object.keys(params).map(function(k){return k+'='+encodeURIComponent(params[k]);}).join('&');
+  return fetch(u,{keepalive:u.length<7000}).then(function(r){return r.json();}).then(function(j){if(!j||!j.ok)throw new Error('bad');return j;});
+}
+function setCStatus(t){cStatus=t;paintSync();}
+function mergeCloud(c){
+  var ch=false;if(!c)return false;
+  Object.keys(c.q||{}).forEach(function(id){
+    var a=S.q[id],b=c.q[id];
+    if(!a){S.q[id]=b;ch=true;}
+    else if((b.done&&!a.done)||(!a.done&&!b.done&&b.tries>a.tries)){S.q[id]=b;ch=true;}
+  });
+  var newer=(c.t||0)>(S.t||0);
+  ['c','d'].forEach(function(k){
+    Object.keys(c[k]||{}).forEach(function(id){
+      if(S[k][id]===undefined||(newer&&JSON.stringify(S[k][id])!==JSON.stringify(c[k][id]))){S[k][id]=c[k][id];ch=true;}
+    });
+  });
+  return ch;
+}
+function cloudPull(){
+  if(!CLOUD||!cName||cPulling)return Promise.resolve();
+  cPulling=true;
+  setCStatus('Checking for saved progress…');
+  return cloudCall({action:'get',key:CFG.key,name:cName,lesson:LID}).then(function(j){
+    cPulling=false;cPulled=true;
+    if(mergeCloud(j.state)){save({local:true});setCStatus('Loaded your saved progress.');window.setTimeout(function(){window.location.reload();},600);return;}
+    setCStatus('Saved online.');
+    if(cDirty||Object.keys(S.q).length||Object.keys(S.c).length)cloudPush();
+  }).catch(function(){cPulling=false;setCStatus('Could not reach online storage. Progress is saved on this device only.');});
+}
+function cloudSchedule(){
+  if(!CLOUD||!cName)return;
+  cDirty=true;
+  if(!cPulled){cloudPull();return;}
+  window.clearTimeout(cTimer);setCStatus('Saving…');cTimer=window.setTimeout(cloudPush,1200);
+}
+function cloudPush(){
+  if(!CLOUD||!cName||!cPulled)return Promise.resolve();
+  var total=REG.length,done=0,first=0;
+  REG.forEach(function(r){var s=S.q[r.id];if(s&&s.done)done++;if(s&&s.first)first++;});
+  var summary='';try{summary=resultsText();}catch(e){}
+  cDirty=false;
+  return cloudCall({action:'save',key:CFG.key,name:cName,lesson:LID,first:first,done:done,total:total,summary:summary,data:JSON.stringify(S)})
+    .then(function(){setCStatus('Saved online.');})
+    .catch(function(){cDirty=true;setCStatus('Could not reach online storage. Progress is saved on this device only.');});
+}
+function paintSync(){
+  var bar=document.getElementById('syncbar');if(!bar)return;
+  if(!cName){
+    bar.innerHTML='<div class="wrap"><form id="syncform"><label for="syncname"><b>Save your progress online.</b> Type your name once, and use the same name on every device:</label> <input id="syncname" type="text" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. grayson"> <button class="primary" type="submit">Start saving</button></form></div>';
+    bar.querySelector('#syncform').addEventListener('submit',function(ev){
+      ev.preventDefault();var v=cleanName(bar.querySelector('#syncname').value);if(!v)return;
+      cName=v;try{window.localStorage.setItem(NAMEKEY,v);}catch(e){}
+      cDirty=true;cloudPull();paintSync();
+    });
+    return;
+  }
+  bar.innerHTML='<div class="wrap"><span>Saving as <b></b> &middot; <span id="syncstat" role="status" aria-live="polite"></span></span> <button type="button" id="syncchange">Change name</button></div>';
+  bar.querySelector('b').textContent=cName;
+  bar.querySelector('#syncstat').textContent=cStatus;
+  bar.querySelector('#syncchange').addEventListener('click',function(){
+    cName='';cPulled=false;try{window.localStorage.removeItem(NAMEKEY);}catch(e){}paintSync();
+  });
+}
+function setupSync(){
+  if(!CLOUD)return;
+  var bar=document.createElement('div');bar.id='syncbar';bar.className='syncbar';
+  var pitch=document.querySelector('.pitch');
+  if(pitch&&pitch.parentNode)pitch.parentNode.insertBefore(bar,pitch.nextSibling);else document.body.insertBefore(bar,document.body.firstChild);
+  paintSync();
+  if(cName)cloudPull();
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&cDirty&&cPulled){window.clearTimeout(cTimer);cloudPush();}});
+}
+
+
+
+/* ---------- graphs (inline SVG) ---------- */
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function nfmt(v){var r=Math.round(v*100)/100;return String(r);}
+function sampleFn(sr){
+  var f=sr.fn;if(typeof f==='string'){f=new Function('t','return '+f+';');}
+  var a=sr.from,b=sr.to,n=sr.n||60,pts=[];
+  for(var i=0;i<=n;i++){var t=a+(b-a)*i/n;pts.push([t,f(t)]);}
+  return pts;
+}
+function graph(o){
+  var W=o.w||380,H=o.h||250,L=50,R=16,T=14,B=42;
+  var x0=o.x[0],x1=o.x[1],xs=o.x[2],y0=o.y[0],y1=o.y[1],ys=o.y[2];
+  function X(v){return L+(v-x0)/(x1-x0)*(W-L-R);}
+  function Y(v){return H-B-(v-y0)/(y1-y0)*(H-T-B);}
+  var s='<svg class="gsvg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.alt||'Graph')+'" xmlns="http://www.w3.org/2000/svg">';
+  s+='<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#fff"/>';
+  var v,i;
+  for(v=x0;v<=x1+1e-9;v+=xs){var xx=X(v);s+='<line x1="'+xx+'" y1="'+T+'" x2="'+xx+'" y2="'+(H-B)+'" stroke="#e1e8df" stroke-width="1"/>';s+='<text x="'+xx+'" y="'+(H-B+15)+'" text-anchor="middle" font-size="11" fill="#4a5a50">'+nfmt(v)+'</text>';}
+  for(v=y0;v<=y1+1e-9;v+=ys){var yy=Y(v);s+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#e1e8df" stroke-width="1"/>';s+='<text x="'+(L-6)+'" y="'+(yy+4)+'" text-anchor="end" font-size="11" fill="#4a5a50">'+nfmt(v)+'</text>';}
+  if(y0<0&&y1>0)s+='<line x1="'+L+'" y1="'+Y(0)+'" x2="'+(W-R)+'" y2="'+Y(0)+'" stroke="#16221b" stroke-width="1.6"/>';
+  s+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(H-B)+'" stroke="#16221b" stroke-width="1.6"/>';
+  s+='<line x1="'+L+'" y1="'+(H-B)+'" x2="'+(W-R)+'" y2="'+(H-B)+'" stroke="#16221b" stroke-width="1.6"/>';
+  (o.fills||[]).forEach(function(f){
+    var pts=f.pts.map(function(p){return X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1);}).join(' ');
+    s+='<polygon points="'+pts+'" fill="'+(f.color||'#2d6a3e')+'" fill-opacity="'+(f.op||0.22)+'" stroke="none"/>';
+  });
+  (o.series||[]).forEach(function(sr){
+    var pts=sr.pts||sampleFn(sr);
+    var d=pts.map(function(p,k){return (k?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1);}).join(' ');
+    s+='<path d="'+d+'" fill="none" stroke="'+(sr.color||'#2d6a3e')+'" stroke-width="'+(sr.w||2.8)+'"'+(sr.dash?' stroke-dasharray="'+sr.dash+'"':'')+' stroke-linejoin="round" stroke-linecap="round"/>';
+  });
+  (o.lines||[]).forEach(function(l){
+    s+='<line x1="'+X(l.x1)+'" y1="'+Y(l.y1)+'" x2="'+X(l.x2)+'" y2="'+Y(l.y2)+'" stroke="'+(l.color||'#c8372d')+'" stroke-width="'+(l.w||2)+'"'+(l.dash?' stroke-dasharray="'+l.dash+'"':'')+'/>';
+  });
+  (o.marks||[]).forEach(function(m){
+    s+='<circle cx="'+X(m.x)+'" cy="'+Y(m.y)+'" r="4.5" fill="'+(m.color||'#c8372d')+'" stroke="#fff" stroke-width="1.5"/>';
+    if(m.label)s+='<text x="'+(X(m.x)+(m.dx==null?8:m.dx))+'" y="'+(Y(m.y)+(m.dy==null?-8:m.dy))+'" font-size="11.5" font-weight="700" fill="#16221b"'+(m.anchor?' text-anchor="'+m.anchor+'"':'')+'>'+esc(m.label)+'</text>';
+  });
+  (o.texts||[]).forEach(function(t){
+    s+='<text x="'+X(t.x)+'" y="'+Y(t.y)+'" font-size="12" font-weight="700" fill="'+(t.color||'#1d4a2b')+'"'+(t.anchor?' text-anchor="'+t.anchor+'"':'')+'>'+esc(t.t)+'</text>';
+  });
+  s+='<text x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16221b">'+esc(o.xl||'')+'</text>';
+  s+='<text transform="translate(13 '+((T+H-B)/2)+') rotate(-90)" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16221b">'+esc(o.yl||'')+'</text>';
+  return s+'</svg>';
+}
+function setupFigs(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fig]'),function(el){
+    try{el.innerHTML=graph(JSON.parse(el.getAttribute('data-fig')));}catch(e){}
+  });
+}
+window.SPH.graph=graph;
+
+/* ---------- extra widgets ---------- */
+function widgetBigFive(el){
+  var map={
+    'dd':['Δd','v<sub>f</sub> = v<sub>i</sub> + a&Delta;t','This one has no &Delta;d in it.'],
+    'a':['a','&Delta;d = &frac12;(v<sub>f</sub> + v<sub>i</sub>)&Delta;t','This one has no a in it.'],
+    'vf':['v<sub>f</sub>','&Delta;d = v<sub>i</sub>&Delta;t + &frac12;a&Delta;t&sup2;','This one has no v<sub>f</sub> in it.'],
+    'vi':['v<sub>i</sub>','&Delta;d = v<sub>f</sub>&Delta;t &minus; &frac12;a&Delta;t&sup2;','This one has no v<sub>i</sub> in it.'],
+    'dt':['Δt','v<sub>f</sub>&sup2; = v<sub>i</sub>&sup2; + 2a&Delta;d','This one has no &Delta;t in it.']
+  };
+  var opts=Object.keys(map).map(function(k){return '<option value="'+k+'">'+map[k][0]+'</option>';}).join('');
+  el.innerHTML='<p><b>Equation picker.</b> A problem has five possible quantities. Three are given, one is asked for, and <b>one is neither</b>. Pick the one that is neither:</p>'+
+    '<label>The quantity that is NOT given and NOT asked for: <select aria-label="Missing quantity"><option value="">Choose&hellip;</option>'+opts+'</select></label><div class="out" role="status" aria-live="polite"></div>';
+  var sel=el.querySelector('select'),out=el.querySelector('.out');
+  sel.addEventListener('change',function(){
+    var m=map[sel.value];if(!m){out.innerHTML='';return;}
+    out.innerHTML='<p class="formula">'+m[1]+'</p><p>'+m[2]+' Use it to find your unknown, because everything else in it is either given or the unknown.</p>';
+  });
+}
+
+function widgetProj(el){
+  el.innerHTML='<p><b>Kick it.</b> Change the launch speed and angle. The ball starts at ground level and lands at ground level. Air is ignored.</p>'+
+   '<label>Launch speed: <b class="sv">20</b> m/s <input class="rs1" type="range" min="5" max="30" step="1" value="20" aria-label="Launch speed" style="width:100%;min-height:32px"></label>'+
+   '<label>Angle above horizontal: <b class="av">35</b>&deg; <input class="rs2" type="range" min="5" max="85" step="5" value="35" aria-label="Launch angle" style="width:100%;min-height:32px"></label>'+
+   '<div class="gfig"></div><div class="out" role="status" aria-live="polite"></div>';
+  var r1=el.querySelector('.rs1'),r2=el.querySelector('.rs2'),sv=el.querySelector('.sv'),av=el.querySelector('.av'),gf=el.querySelector('.gfig'),out=el.querySelector('.out');
+  function path(v,deg){var th=deg*Math.PI/180,vx=v*Math.cos(th),vy=v*Math.sin(th),T=2*vy/9.8,pts=[];for(var i=0;i<=60;i++){var t=T*i/60;pts.push([vx*t,vy*t-4.9*t*t]);}return pts;}
+  function draw(){
+    var v=parseFloat(r1.value),deg=parseFloat(r2.value);sv.textContent=v;av.textContent=deg;
+    var th=deg*Math.PI/180,vx=v*Math.cos(th),vy=v*Math.sin(th),T=2*vy/9.8,R=vx*T,H=vy*vy/(2*9.8);
+    var ser=[{pts:path(v,90-deg),color:'#9aa89c',dash:'5 4',w:2},{pts:path(v,deg),color:'#2d6a3e',w:3}];
+    gf.innerHTML=graph({x:[0,100,20],y:[0,50,10],xl:'horizontal distance (m)',yl:'height (m)',alt:'Path of a kicked ball for the chosen speed and angle, with the complementary angle path dashed.',series:ser,
+      marks:[{x:R,y:0,color:'#c8372d'}]});
+    out.innerHTML='<p>Horizontal speed v<sub>x</sub> = '+vx.toFixed(1)+' m/s (never changes). Starting upward speed v<sub>iy</sub> = '+vy.toFixed(1)+' m/s.</p><p>Time in the air = '+T.toFixed(2)+' s. Range = <b>'+R.toFixed(1)+' m</b>. Maximum height = '+H.toFixed(1)+' m.</p><p>The dashed grey path is the complementary angle ('+(90-deg)+'&deg;): the same speed gives the <b>same range</b>. At 45&deg; the two paths are the same, and the range is the greatest.</p>';
+  }
+  r1.addEventListener('input',draw);r2.addEventListener('input',draw);draw();
+}
+
+function widgetSecant(el){
+  el.innerHTML='<p><b>Zoom in on one instant.</b> A player&rsquo;s position is d = t&sup2; (d in m, t in s). Watch the average velocity from 3.0 s to a later time as the time gap shrinks.</p>'+
+   '<label>Time gap: <b class="hv">2.0</b> s <input type="range" min="0.1" max="2" step="0.1" value="2" aria-label="Time gap in seconds" style="width:100%;min-height:32px"></label>'+
+   '<div class="gfig"></div><div class="out" role="status" aria-live="polite"></div>';
+  var rg=el.querySelector('input'),hv=el.querySelector('.hv'),gf=el.querySelector('.gfig'),out=el.querySelector('.out');
+  function draw(){
+    var hh=parseFloat(rg.value),t2=3+hh,d1=9,d2=t2*t2;hv.textContent=hh.toFixed(1);
+    var m=(d2-d1)/hh;
+    gf.innerHTML=graph({x:[0,6,1],y:[0,36,6],xl:'time (s)',yl:'position (m)',alt:'Position-time curve d equals t squared with a secant line starting at 3 seconds',
+      series:[{fn:'t*t',from:0,to:6,n:60}],
+      lines:[{x1:3-1.5,y1:9-6*1.5,x2:3+1.5,y2:9+6*1.5,color:'#16221b',dash:'5 4',w:1.6},{x1:3,y1:9,x2:t2,y2:d2,color:'#c8372d',w:2.4}],
+      marks:[{x:3,y:9,label:'3.0 s',dx:-8,dy:-10,anchor:'end'},{x:t2,y:d2,color:'#c8372d'}]});
+    out.innerHTML='<p>Average velocity from 3.0 s to '+t2.toFixed(1)+' s = ('+d2.toFixed(2)+' &minus; 9.00) &divide; '+hh.toFixed(1)+' = <b>'+m.toFixed(2)+' m/s</b>. The dashed line is the tangent. Its slope is the velocity <i>at</i> 3.0 s: <b>6.0 m/s</b>.</p>';
+  }
+  rg.addEventListener('input',draw);draw();
+}
+
+/* ---------- typed entries (hands-on tables) ---------- */
+function fieldKey(el){return 'f:'+el.getAttribute('data-field');}
+function setupFields(){
+  var els=document.querySelectorAll('[data-field]');
+  Array.prototype.forEach.call(els,function(el){
+    var k=fieldKey(el);
+    if(S.d[k]!=null)el.value=S.d[k];
+    var tm=null;
+    el.addEventListener('input',function(){
+      window.clearTimeout(tm);
+      tm=window.setTimeout(function(){S.d[k]=el.value;save();},500);
+    });
+    el.addEventListener('blur',function(){if(S.d[k]!==el.value){S.d[k]=el.value;save();}});
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-check]'),function(b){
+    b.addEventListener('click',function(){
+      var out=document.getElementById(b.getAttribute('data-out'));
+      var msgs=runCheck(b.getAttribute('data-check'),b.getAttribute('data-arg'));
+      if(out){out.className='fb '+(msgs.ok?'ok':'no');out.innerHTML=msgs.html;}
+      Array.prototype.forEach.call(document.querySelectorAll('[data-field]'),function(el){S.d[fieldKey(el)]=el.value;});
+      save();
+    });
+  });
+}
+function fv(id){var el=document.querySelector('[data-field="'+id+'"]');return el?el.value.trim():'';}
+function near(a,b,tol){return Math.abs(a-b)<=Math.abs(b)*tol;}
+function runCheck(kind,arg){
+  var m=[],ok=true;
+  function bad(t){m.push(t);ok=false;}
+  if(kind==='sprint'){
+    var r=arg,t=parseNum(fv('sp'+r+'t')),v=parseNum(fv('sp'+r+'v')),k=parseNum(fv('sp'+r+'k'));
+    if(isNaN(t))return {ok:false,html:'<p>Type your time for run '+r+' first.</p>'};
+    if(sigCount(fv('sp'+r+'t'))!==2)bad('Write the time with <b>2 significant digits</b> (like 3.8 s).');
+    if(isNaN(v))bad('Type your speed in m/s.');
+    else{
+      var ex=20.0/t;
+      if(!near(v,ex,0.03))bad('Speed = distance &divide; time = 20.0 &divide; '+t+'. Check that division. (Your time and speed should agree.)');
+      else if(sigCount(fv('sp'+r+'v'))!==2)bad('Your speed is about right. Round it to <b>2 significant digits</b>, because the time only has 2.');
+      if(!isNaN(k)){
+        if(!near(k,ex*3.6,0.03))bad('To go from m/s to km/h, multiply by 3.6.');
+        else if(sigCount(fv('sp'+r+'k'))!==2)bad('The km/h value is about right. Round it to 2 significant digits.');
+      }else bad('Type your speed in km/h.');
+    }
+    if(ok)m.push('Run '+r+' checks out. The time, speed and conversion all agree, with the right number of digits.');
+    return {ok:ok,html:'<p>'+m.join('</p><p>')+'</p>'};
+  }
+  if(kind==='walk'){
+    var d=parseNum(fv('wk1d')),D=parseNum(fv('wk1D')),tt=parseNum(fv('wk1t')),sp=parseNum(fv('wk1s')),ve=parseNum(fv('wk1v'));
+    if(isNaN(d)||isNaN(D)||isNaN(tt)||tt<=0||isNaN(sp)||isNaN(ve))return {ok:false,html:'<p>Fill in the distance, displacement, time, average speed and average velocity first. Use numbers only in these boxes. Put directions in the direction boxes.</p>'};
+    if(d<0)bad('Distance is never negative.');
+    if(Math.abs(D)>d*1.01)bad('The size of the displacement can never be bigger than the distance. Check both numbers.');
+    if(!near(sp,d/tt,0.05))bad('Average speed = distance &divide; time = '+d+' &divide; '+tt+'. Check that division.');
+    if(!near(Math.abs(ve),Math.abs(D)/tt,0.05))bad('Average velocity = displacement &divide; time. Use the <b>displacement</b>, not the distance.');
+    if(ok)m.push('Your speed and velocity both match your own measurements. Notice which one is smaller. Why?');
+    return {ok:ok,html:'<p>'+m.join('</p><p>')+'</p>'};
+  }
+
+  if(kind==='ruler'){
+    var rr=arg,dcm=parseNum(fv('rl'+rr+'d')),tr=parseNum(fv('rl'+rr+'t'));
+    if(isNaN(dcm)||dcm<=0)return {ok:false,html:'<p>Type the distance the ruler fell for drop '+rr+', in centimetres.</p>'};
+    if(isNaN(tr))return {ok:false,html:'<p>Now work out your reaction time for drop '+rr+' and type it in seconds.</p>'};
+    var ext=Math.sqrt(2*(dcm/100)/9.8);
+    if(near(tr,ext,0.08))return {ok:true,html:'<p>Drop '+rr+' checks out: about '+ext.toFixed(2)+' s. Most people land between 0.15 s and 0.25 s.</p>'};
+    if(near(tr,Math.sqrt(2*dcm/9.8),0.08))return {ok:false,html:'<p>Convert the distance to metres first. 1 cm = 0.01 m.</p>'};
+    return {ok:false,html:'<p>Use &Delta;d = &frac12;a&Delta;t&sup2; with a = 9.8 m/s&sup2; and v<sub>i</sub> = 0, so &Delta;t = &radic;(2&Delta;d &divide; 9.8). Check that the distance is in metres.</p>'};
+  }
+  if(kind==='throw'){
+    var a30=parseNum(fv('th30')),a45=parseNum(fv('th45')),a60=parseNum(fv('th60'));
+    if(isNaN(a30)||isNaN(a45)||isNaN(a60))return {ok:false,html:'<p>Type a distance for each of the three angles first.</p>'};
+    if(a45>=a30&&a45>=a60)return {ok:true,html:'<p>45&deg; went farthest, as the physics predicts. Notice that 30&deg; and 60&deg; go about the same distance. They are complementary angles.</p>'};
+    return {ok:false,html:'<p>The physics says 45&deg; should go farthest (and 30&deg; and 60&deg; about the same). Real throws vary a lot. Do 3 throws at each angle and use the average of each. Did one angle have a bad throw?</p>'};
+  }
+
+  if(kind==='ptwalk'){
+    var ts=[];for(var i=0;i<6;i++){ts.push(parseNum(fv('pw'+i)));}
+    var vv=parseNum(fv('pwv'));
+    if(ts.some(isNaN))return {ok:false,html:'<p>Type the time you reached each cone (0 m to 10 m) in the table first.</p>'};
+    for(var j=1;j<6;j++){if(ts[j]<=ts[j-1])return {ok:false,html:'<p>The times should keep getting bigger as you walk further. Check cone '+j+'.</p>'};}
+    if(isNaN(vv))return {ok:false,html:'<p>Now work out your average velocity from 0 m to 10 m and type it in.</p>'};
+    var ev=10/(ts[5]-ts[0]);
+    if(!near(vv,ev,0.05))return {ok:false,html:'<p>Average velocity = &Delta;d &divide; &Delta;t = 10 m &divide; ('+ts[5]+' &minus; '+ts[0]+') s. Check that division.</p>'};
+    var gaps=[];for(var k=1;k<6;k++)gaps.push(ts[k]-ts[k-1]);
+    var mx=Math.max.apply(null,gaps),mn=Math.min.apply(null,gaps);
+    var steady=(mx-mn)<=0.25*mx;
+    return {ok:true,html:'<p>Your average velocity checks out at about '+ev.toFixed(1)+' m/s.</p><p>'+(steady?'Your times were evenly spaced, so your graph should be close to a straight line. That is constant velocity.':'Your times were not evenly spaced, so your graph will bend. That means your velocity was changing.')+'</p>'};
+  }
+
+  if(kind==='vtwalk'){
+    var tv=[];for(var i=0;i<6;i++){tv.push(parseNum(fv('vt'+i)));}
+    if(tv.some(isNaN))return {ok:false,html:'<p>Type the time you reached each cone first.</p>'};
+    for(var j=1;j<6;j++){if(tv[j]<=tv[j-1])return {ok:false,html:'<p>The times should keep getting bigger. Check cone '+j+'.</p>'};}
+    var vs=[];for(var k=1;k<=5;k++){vs.push(parseNum(fv('vv'+k)));}
+    if(vs.some(isNaN))return {ok:false,html:'<p>Work out the velocity for each 2 m section and type all five. Velocity = 2.0 m &divide; the time for that section.</p>'};
+    var badk=0;for(var m=0;m<5;m++){if(!near(vs[m],2.0/(tv[m+1]-tv[m]),0.06))badk=m+1;}
+    if(badk)return {ok:false,html:'<p>Check section '+badk+'. Velocity = 2.0 m &divide; ('+tv[badk]+' &minus; '+tv[badk-1]+') s.</p>'};
+    var up=vs[4]>vs[0]*1.15,down=vs[4]<vs[0]/1.15;
+    return {ok:true,html:'<p>All five velocities check out.</p><p>'+(up?'Your velocities grew from section to section, so your v-t graph slopes upward. That is a positive acceleration.':(down?'Your velocities shrank, so your v-t graph slopes downward. You were slowing down.':'Your velocities stayed about the same, so your v-t graph is nearly flat. That is a constant velocity. Try again and really speed up from slow to fast.'))+'</p>'};
+  }
+  if(kind==='carride'){
+    var dk=parseNum(fv('cr_d')),tm=parseNum(fv('cr_t')),av=parseNum(fv('cr_v'));
+    var rd=[parseNum(fv('cr1')),parseNum(fv('cr2')),parseNum(fv('cr3'))];
+    if(isNaN(dk)||isNaN(tm)||tm<=0||isNaN(av)||rd.some(isNaN))return {ok:false,html:'<p>Fill in the trip distance, trip time, your average speed and all three speedometer readings.</p>'};
+    var exv=dk/(tm/60);
+    if(!near(av,exv,0.05))return {ok:false,html:'<p>Average speed = distance &divide; time. The time is in minutes, so divide by 60 to get hours: '+dk+' km &divide; ('+tm+' &divide; 60) h.</p>'};
+    var mn=Math.min.apply(null,rd),mx=Math.max.apply(null,rd);
+    return {ok:true,html:'<p>Your average speed checks out at about '+exv.toFixed(0)+' km/h.</p><p>Your three speedometer readings ranged from '+mn+' to '+mx+' km/h. '+((mx-mn)>5?'None of them had to match the average. Each reading is an instantaneous speed, at one moment.':'They were close to each other, so it was a steady trip. On a stop-and-go trip they would differ a lot more.')+'</p>'};
+  }
+
+  if(kind==='ramp'){
+    var rd=parseNum(fv('rp_d')),rt=parseNum(fv('rp_t')),rva=parseNum(fv('rp_va')),rvf=parseNum(fv('rp_vf')),ra=parseNum(fv('rp_a'));
+    if([rd,rt,rva,rvf,ra].some(isNaN)||rt<=0)return {ok:false,html:'<p>Fill in all five boxes: distance, time, average velocity, final velocity and acceleration.</p>'};
+    if(!near(rva,rd/rt,0.06))return {ok:false,html:'<p>Average velocity = distance &divide; time = '+rd+' &divide; '+rt+'.</p>'};
+    if(!near(rvf,2*rva,0.06))return {ok:false,html:'<p>The ball starts at 0 and speeds up steadily, so its average velocity is halfway between 0 and v<sub>f</sub>. That means v<sub>f</sub> = 2 &times; the average velocity.</p>'};
+    if(!near(ra,rvf/rt,0.06))return {ok:false,html:'<p>Acceleration = change in velocity &divide; time = v<sub>f</sub> &divide; &Delta;t = '+rvf.toFixed(2)+' &divide; '+rt+'.</p>'};
+    return {ok:true,html:'<p>Your ramp acceleration is about '+(rvf/rt).toFixed(2)+' m/s&sup2;. Tilt the ramp higher and try again. Does the acceleration go up? (It should.)</p>'};
+  }
+
+  if(kind==='vecwalk'){
+    var e=parseNum(fv('hw_e')),n=parseNum(fv('hw_n')),mr=parseNum(fv('hw_m')),cr=parseNum(fv('hw_c'));
+    if([e,n,mr,cr].some(isNaN))return {ok:false,html:'<p>Fill in the east distance, the north distance, the straight-line distance you measured and the one you calculated.</p>'};
+    var ex=Math.sqrt(e*e+n*n);
+    if(!near(cr,ex,0.04))return {ok:false,html:'<p>The straight-line distance comes from Pythagoras: &radic;(east&sup2; + north&sup2;) = &radic;('+e+'&sup2; + '+n+'&sup2;).</p>'};
+    if(!near(mr,ex,0.12))return {ok:false,html:'<p>Your calculated value is right ('+ex.toFixed(2)+'), but your tape-measure value is quite different. Walk it again and measure from the exact start to the exact finish.</p>'};
+    return {ok:true,html:'<p>Your measured and calculated distances agree (about '+ex.toFixed(1)+'). The direction is [E '+(Math.atan2(n,e)*180/Math.PI).toFixed(0)+'&deg; N].</p>'};
+  }
+  if(kind==='walk0'){
+    var t0=parseNum(fv('wk2t')),D0=parseNum(fv('wk2D')),v0=parseNum(fv('wk2v'));
+    if(isNaN(t0)||isNaN(D0)||isNaN(v0))return {ok:false,html:'<p>Fill in the time, displacement and average velocity for your second walk.</p>'};
+    if(Math.abs(D0)>0.05*Math.max(1,Math.abs(parseNum(fv('wk1d'))||1)))bad('For your displacement to be zero, you have to end exactly where you started. What did you measure?');
+    if(Math.abs(v0)>0.05)bad('If the displacement is zero, the average velocity is zero too.');
+    if(ok)m.push('Right. Zero displacement means zero average velocity, no matter how far you walked.');
+    return {ok:ok,html:'<p>'+m.join('</p><p>')+'</p>'};
+  }
+  return {ok:false,html:''};
+}
+function fieldsText(){
+  var out=[];
+  Array.prototype.forEach.call(document.querySelectorAll('[data-field][data-flabel]'),function(el){
+    if(el.value.trim())out.push(el.getAttribute('data-flabel')+': '+el.value.trim());
+  });
+  return out;
+}
+
+/* ---------- results ---------- */
+function resultsText(){
+  var total=REG.length,done=0,first=0,look=[];
+  REG.forEach(function(r){var s=S.q[r.id];if(s&&s.done)done++;if(s&&s.first)first++;
+    if(!(s&&s.first))look.push('Q'+r.n+(r.tag?' ('+r.tag+')':'')+(s&&s.done?' - got it after '+s.tries+' tries':' - not finished'));});
+  var cs={r:[],a:[],g:[]};
+  Array.prototype.forEach.call(document.querySelectorAll('.can li'),function(li){var id=li.getAttribute('data-id');var v=S.c[id];if(v)cs[v].push(li.textContent.replace(/Not yetGetting thereGot it/,'').trim());});
+  var d=new Date();
+  var t='SPH3U Kinematics - '+LTITLE+' ('+d.toISOString().slice(0,10)+')\n';
+  t+='Knowledge checks: '+first+' of '+total+' right on the first try; '+done+' of '+total+' finished.\n';
+  t+='Worth another look: '+(look.length?'\n  - '+look.join('\n  - '):'none')+'\n';
+  t+='Confidence: Got it '+cs.g.length+', Getting there '+cs.a.length+', Not yet '+cs.r.length+'\n';
+  if(cs.r.length)t+='Not yet: \n  - '+cs.r.join('\n  - ')+'\n';
+  if(cs.a.length)t+='Getting there: \n  - '+cs.a.join('\n  - ')+'\n';
+  var fe=fieldsText();if(fe.length)t+='Hands-on entries:\n  - '+fe.join('\n  - ')+'\n';
+  return t;
+}
+function updateResults(){
+  var box=document.getElementById('results');if(!box)return;
+  var total=REG.length,done=0,first=0;
+  REG.forEach(function(r){var s=S.q[r.id];if(s&&s.done)done++;if(s&&s.first)first++;});
+  var sum=box.querySelector('.sum');
+  if(sum)sum.innerHTML='<p><b>'+first+' of '+total+'</b> knowledge-check questions right on the first try. <b>'+done+' of '+total+'</b> finished.</p>';
+}
+function setupResults(){
+  var box=document.getElementById('results');if(!box)return;
+  box.innerHTML='<div class="sum"></div><div class="row"><button class="primary" type="button" id="copyres">Show my results summary</button><button type="button" id="resetles">Start this lesson over</button></div><textarea id="restext" readonly aria-label="Results summary" style="display:none"></textarea><p id="copynote" style="display:none"></p>';
+  var ta=box.querySelector('#restext'),note=box.querySelector('#copynote');
+  box.querySelector('#copyres').addEventListener('click',function(){
+    ta.value=resultsText();ta.style.display='block';ta.focus();ta.select();
+    var ok=false;try{ok=document.execCommand&&document.execCommand('copy');}catch(e){}
+    if(!ok&&navigator.clipboard&&navigator.clipboard.writeText){try{navigator.clipboard.writeText(ta.value);ok=true;}catch(e){}}
+    note.style.display='block';note.textContent=ok?'Copied. You can paste it into a note to keep your own copy.':'Select the text above if you want to copy it.';
+  });
+  box.querySelector('#resetles').addEventListener('click',function(){
+    if(window.confirm('Clear your answers and progress for this lesson?')){
+      S={q:{},c:{},d:{},t:0};save();
+      var go=function(){window.location.reload();};
+      if(CLOUD&&cName&&cPulled){window.clearTimeout(cTimer);cloudPush().then(go,go);window.setTimeout(go,4000);}else go();
+    }
+  });
+  updateResults();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  setupFigs();setupReveal();setupWidgets();setupProgress();setupCan();setupResults();setupFields();setupSync();
+  if(window.LESSON_INIT)window.LESSON_INIT(window.SPH);
+  updateResults();
+});
+})();
+
+</script>
+</body>
+</html>

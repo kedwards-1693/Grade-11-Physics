@@ -1,6 +1,6 @@
-# Grade 11 Physics (SPH3U): Kinematics Review
+# Grade 11 Physics (SPH3U) Review
 
-Interactive review lessons for the Kinematics unit. Each lesson explains the idea in plain language, shows worked examples, and has short knowledge checks with instant feedback.
+Interactive review lessons for Grade 11 Physics: Unit 1 Kinematics and Unit 2 Forces. Each lesson explains the idea in plain language, shows worked examples, and has short knowledge checks with instant feedback.
 
 ## Start here
 
@@ -20,6 +20,14 @@ Open **index.html** (or the site link for this repository) and work through the 
 | 9 | Projectile motion |
 | 10 | Lab skills: the two Vernier labs |
 | 11 | Review and practice test |
+| 12 | Unit 2: Newton's first law |
+| 13 | Unit 2: Free body diagrams |
+| 14 | Unit 2: The normal force |
+| 15 | Unit 2: Newton's second law |
+| 16 | Unit 2: Newton's third law |
+| 17 | Unit 2: Universal gravitation |
+| 18 | Unit 2: Friction and the friction lab |
+| 19 | Unit 2: Forces review and practice test |
 
 ## How to use
 
@@ -44,5 +52,13 @@ Open **index.html** (or the site link for this repository) and work through the 
 - `lesson-9-projectile-motion.html`
 - `lesson-10-labs.html`
 - `lesson-11-review.html`
+- `lesson-12-newtons-first-law.html`
+- `lesson-13-free-body-diagrams.html`
+- `lesson-14-the-normal-force.html`
+- `lesson-15-newtons-second-law.html`
+- `lesson-16-newtons-third-law.html`
+- `lesson-17-universal-gravitation.html`
+- `lesson-18-friction-lab.html`
+- `lesson-19-forces-review.html`
 
 Each lesson is a single self-contained page. It needs no installs and no internet connection once it has loaded.
