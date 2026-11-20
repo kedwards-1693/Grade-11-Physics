@@ -10,8 +10,16 @@ Open **index.html** (or the site link for this repository) and work through the 
 |---|---|
 | 0 | Warm-up: units, scientific notation, significant digits, rearranging formulas |
 | 1 | Scalars and vectors: distance, displacement, speed, velocity |
-
-More lessons will be added as they are finished.
+| 2 | Position-time graphs |
+| 3 | Velocity-time graphs |
+| 4 | Instantaneous velocity |
+| 5 | Acceleration |
+| 6 | The Big Five equations |
+| 7 | Gravity and free fall |
+| 8 | 2-D vectors |
+| 9 | Projectile motion |
+| 10 | Lab skills: the two Vernier labs |
+| 11 | Review and practice test |
 
 ## How to use
 
@@ -26,5 +34,15 @@ More lessons will be added as they are finished.
 - `index.html`: the lesson list
 - `lesson-0-warm-up.html`
 - `lesson-1-scalars-and-vectors.html`
+- `lesson-2-position-time-graphs.html`
+- `lesson-3-velocity-time-graphs.html`
+- `lesson-4-instantaneous-velocity.html`
+- `lesson-5-acceleration.html`
+- `lesson-6-the-big-five.html`
+- `lesson-7-gravity-and-free-fall.html`
+- `lesson-8-2d-vectors.html`
+- `lesson-9-projectile-motion.html`
+- `lesson-10-labs.html`
+- `lesson-11-review.html`
 
 Each lesson is a single self-contained page. It needs no installs and no internet connection once it has loaded.
