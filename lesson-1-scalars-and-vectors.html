@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinematics Lesson 1: Scalars and vectors</title>
+<style>
+:root{
+  --turf:#2d6a3e; --turf-deep:#1d4a2b; --turf-wash:#eaf2e8; --line:#d3dfd0;
+  --ink:#16221b; --ink-soft:#4a5a50; --paper:#ffffff;
+  --card-yellow:#f4c20d; --yellow-wash:#fff6cf; --red:#c8372d; --red-wash:#fde9e7;
+  --good:#17803f; --good-wash:#e3f4e8; --amber-wash:#fff1dc;
+  --measure:68ch;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:18px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--turf-deep);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--card-yellow);outline-offset:2px}
+h1,h2,h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-weight:900;font-style:italic;font-size:clamp(1.8rem,5.5vw,2.8rem);letter-spacing:-.015em}
+h2{font-weight:800;font-size:1.5rem;letter-spacing:-.01em}
+h3{font-weight:700;font-size:1.1rem}
+p{margin:0 0 1em;max-width:var(--measure)}
+ul,ol{max-width:var(--measure);padding-left:1.3em;margin:0 0 1em}
+li{margin:.25em 0}
+sup,sub{line-height:0}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+/* hero */
+.hero{background:var(--turf);color:#fff;padding:28px 0 26px;border-bottom:6px solid var(--turf-deep)}
+.hero .wrap{display:flex;gap:20px;align-items:center}
+.jersey{flex:none;width:92px;height:92px;border:4px solid #fff;border-radius:10px 10px 46px 46px;display:grid;place-items:center;
+  font-weight:900;font-style:italic;font-size:3.4rem;line-height:1}
+.hero h1{margin:0 0 .3em}
+.hero .lede{margin:0;font-size:1.05rem;color:#e4f0e2}
+.hero a{color:#fff}
+@media (max-width:520px){.hero .wrap{flex-direction:column;align-items:flex-start}.jersey{width:72px;height:72px;font-size:2.6rem}}
+
+/* pitch progress strip */
+.pitch{position:sticky;top:0;z-index:20;background:var(--turf-deep);padding:8px 0}
+.pitch .wrap{position:relative}
+.pitch-track{position:relative;height:34px;border:2px solid #fff;border-radius:4px;background:var(--turf)}
+.pitch-track::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid #fff}
+.pitch-track::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border:2px solid #fff;border-radius:50%}
+.pitch .pitch-mark{position:absolute;top:50%;width:14px;height:14px;min-height:0;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #fff;background:var(--turf-deep);padding:0;cursor:pointer}
+.pitch .pitch-mark::after{content:"";position:absolute;inset:-14px}
+.pitch .pitch-mark:hover{background:var(--turf)}
+.pitch .pitch-mark.on{background:var(--card-yellow);border-color:var(--card-yellow)}
+.pitch-ball{position:absolute;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#16221b 0 28%,#fff 30%);border:2px solid #16221b;pointer-events:none;transition:left .7s cubic-bezier(.3,.7,.2,1)}
+.pitch-label{color:#e4f0e2;font-size:.82rem;margin:4px 0 0;max-width:none}
+@media (prefers-reduced-motion:reduce){.pitch-ball{transition:none}}
+
+/* sections */
+.play{padding:30px 0 26px;border-bottom:2px solid var(--line)}
+.play>.wrap>h2{display:flex;gap:12px;align-items:center}
+.play .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--turf);color:#fff;display:grid;place-items:center;font-size:1rem;font-weight:800}
+.play.finished .n{background:var(--card-yellow);color:var(--ink)}
+.done-btn{margin-top:8px}
+
+/* buttons */
+button,.btn{font:inherit;font-weight:700;border-radius:8px;border:2px solid var(--turf-deep);background:#fff;color:var(--turf-deep);padding:9px 16px;min-height:44px;cursor:pointer}
+button:hover{background:var(--turf-wash)}
+button.primary{background:var(--turf-deep);color:#fff}
+button.primary:hover{background:var(--turf)}
+button[disabled]{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+
+/* callouts */
+.plain,.watch,.hands,.vid{border-radius:8px;padding:14px 16px;margin:16px 0;max-width:var(--measure)}
+.plain{background:var(--turf-wash);border-left:6px solid var(--turf)}
+.watch{background:var(--yellow-wash);border-left:6px solid var(--card-yellow)}
+.hands{border:2px dashed var(--turf);background:#fff}
+.vid{background:#f2f4f2;border:1px solid var(--line)}
+.callout-title{font-weight:800;margin:0 0 4px;display:block}
+.watch .callout-title::before{content:"";display:inline-block;width:12px;height:17px;background:var(--card-yellow);border:1.5px solid #8a6d00;border-radius:2px;margin-right:8px;vertical-align:-3px}
+.callout *:last-child{margin-bottom:0}
+.plain p:last-child,.watch p:last-child,.hands p:last-child,.vid p:last-child{margin-bottom:0}
+
+/* tables */
+table{border-collapse:collapse;margin:10px 0 18px;width:100%;max-width:var(--measure)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+@media (max-width:520px){table{font-size:.92rem}th,td{padding:6px 7px}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}
+.stats div{background:#fff;border:2px solid var(--line);border-radius:8px;padding:8px 10px}
+.stats span{display:block;font-size:.9rem;color:var(--ink-soft)}
+.stats b{font-size:1.15rem}
+th{background:var(--turf-wash)}
+.formula{font-size:1.25rem;font-weight:700;font-style:italic;background:#f5f7f4;border:2px solid var(--line);border-radius:8px;padding:10px 14px;display:inline-block;margin:6px 0}
+.v{position:relative;display:inline-block;font-style:italic}
+.v::before{content:"\2192";position:absolute;top:-.68em;left:.12em;font-size:.62em;line-height:1;font-style:normal}
+.nowrap{white-space:nowrap}
+
+/* worked example */
+.we{border:2px solid var(--turf);border-radius:10px;padding:14px 16px;margin:16px 0;max-width:var(--measure)}
+.we>.we-title{font-weight:800;margin:0 0 6px}
+.we .given{background:#f5f7f4;border-radius:6px;padding:8px 12px;margin:8px 0}
+.rs{display:none;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
+.rs.show{display:block}
+.rs .why{color:var(--ink-soft);font-size:.95rem}
+
+/* widgets */
+.widget{background:#f5f7f4;border:2px solid var(--line);border-radius:10px;padding:14px 16px;margin:16px 0;max-width:var(--measure)}
+.widget input,.widget select,.qcard input,.qcard select{font:inherit;border:2px solid #9bb09a;border-radius:8px;padding:8px 10px;min-height:44px;background:#fff;color:var(--ink)}
+.widget input{width:7.5em}.widget label{display:block;margin:4px 12px 4px 0}
+.dg{display:inline-block;min-width:.7em;text-align:center;font-size:1.6rem;font-weight:800;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0 1px;padding:0 3px}
+.dg.sig{background:var(--turf);color:#fff;border-radius:4px}
+.dg.no{color:#8a958d}
+.out{margin-top:10px}
+
+/* quiz */
+.qcard{border:2px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;max-width:var(--measure)}
+.qcard.solved{border-color:var(--good)}
+.qhead{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;color:var(--ink-soft);margin-bottom:6px}
+.qtext{font-weight:600;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font-weight:500;border-color:#9bb09a;color:var(--ink)}
+.opt.right{background:var(--good-wash);border-color:var(--good)}
+.opt.wrong{background:var(--red-wash);border-color:var(--red)}
+.fb{margin-top:10px;padding:10px 12px;border-radius:8px;display:none}
+.fb.ok{display:block;background:var(--good-wash);border-left:6px solid var(--good)}
+.fb.no{display:block;background:var(--amber-wash);border-left:6px solid #d98b00}
+.fb.hint{display:block;background:var(--yellow-wash);border-left:6px solid var(--card-yellow)}
+.fb p{margin:0 0 .5em}
+.sortrow{display:grid;grid-template-columns:1fr minmax(120px,170px);gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.sortrow select{width:100%}
+.sortrow .sfb{grid-column:1/-1;font-size:.95rem;margin-top:-2px}
+.sortrow.good .sfb{color:var(--good)}
+.sortrow.bad .sfb{color:#a35b00}
+@media (max-width:520px){.sortrow{grid-template-columns:1fr}}
+.steps{margin-top:10px;background:#f5f7f4;border-radius:8px;padding:10px 14px}
+
+/* can-do */
+.can{list-style:none;padding:0;max-width:none}
+.can li{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;border-top:1px solid var(--line);padding:10px 0}
+.can .conf{display:flex;gap:6px;flex-wrap:wrap}
+.can .conf button{padding:6px 10px;min-height:40px;font-size:.9rem;border-color:#9bb09a;color:var(--ink)}
+.can .conf button.sel-r{background:var(--red-wash);border-color:var(--red)}
+.can .conf button.sel-a{background:var(--amber-wash);border-color:#d98b00}
+.can .conf button.sel-g{background:var(--good-wash);border-color:var(--good)}
+@media (max-width:620px){.can li{grid-template-columns:1fr}}
+.results{background:var(--turf-wash);border-radius:10px;padding:14px 16px;max-width:var(--measure)}
+.results textarea{width:100%;min-height:150px;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;border:2px solid #9bb09a;border-radius:8px;padding:8px}
+footer{padding:24px 0 60px;color:var(--ink-soft);font-size:.95rem}
+footer p{max-width:none}
+
+/* index */
+.lesson-list{list-style:none;padding:0;max-width:none;display:grid;gap:12px}
+.lesson-list li{display:flex;gap:14px;align-items:center;border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin:0}
+.lesson-list .jn{flex:none;width:52px;height:52px;border:3px solid var(--turf);border-radius:8px 8px 26px 26px;display:grid;place-items:center;font-weight:900;font-style:italic;font-size:1.6rem;color:var(--turf-deep)}
+.lesson-list li.soon{opacity:.6}
+.lesson-list a{font-weight:800;font-size:1.1rem}
+.lesson-list small{display:block;color:var(--ink-soft);font-size:.92rem}
+
+@media print{.pitch,.done-btn,button{display:none!important}.rs{display:block!important}body{font-size:12pt}}
+
+</style>
+</head>
+<body data-lesson="l1" data-title="Lesson 1 Scalars and vectors">
+<header class="hero"><div class="wrap">
+  <div class="jersey" aria-hidden="true">1</div>
+  <div>
+    <h1>Scalars and vectors: how far, how fast, which way</h1>
+    <p class="lede">Distance and displacement. Speed and velocity. Directions and signs. About 60 minutes, plus a walk-and-measure activity.</p>
+  </div>
+</div></header>
+<nav id="pitch" class="pitch" aria-label="Lesson progress"></nav>
+
+<main>
+<section class="play" id="start"><div class="wrap">
+  <h2>Before you start</h2>
+  <p>Have these ready:</p>
+  <ul>
+    <li>Calculator, pencil and paper</li>
+    <li>The <b>SPH3U Formula Sheet</b> from Google Classroom</li>
+    <li>For the activity in part 6: a tape measure or a few cones, and a phone stopwatch</li>
+  </ul>
+  <p>Done Lesson 0 first? The unit conversions and rounding from it show up here.</p>
+</div></section>
+
+<section class="play" id="s1" data-track><div class="wrap">
+  <h2><span class="n">1</span>The winger&rsquo;s run</h2>
+  <p>A coach tracks a winger with GPS. She runs <b>30 m</b> towards the opponent&rsquo;s goal, then turns and runs <b>18 m</b> back to help defend. The GPS says she ran <b>48 m</b>. The coach says she ended up <b>12 m</b> ahead of where she started.</p>
+  <p>They are both right. They are answering different questions. One is about <i>how much ground</i> she covered. The other is about <i>where she ended up</i>. Physics keeps those two ideas apart, and that is what this lesson is about.</p>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s2" data-track><div class="wrap">
+  <h2><span class="n">2</span>Position, distance and displacement</h2>
+  <div class="plain callout"><span class="callout-title">In plain words</span>
+    <p>A <b>scalar</b> has a size only. A <b>vector</b> has a size <i>and</i> a direction.</p>
+    <p><b>Position</b> is where you are, measured from a starting point, with a direction. (&ldquo;The corner flag is 50 m [NE] of the goal.&rdquo;) <b>Distance</b> is how much ground you covered along the path, like an odometer reading. <b>Displacement</b> is your <i>change in position</i>: a straight arrow from where you started to where you finished, however twisty the path.</p></div>
+  <table>
+    <tr><th>Quantity</th><th>Symbol</th><th>Scalar or vector?</th><th>Direction?</th></tr>
+    <tr><td>Position</td><td><span class="v">d</span></td><td>Vector</td><td>Yes</td></tr>
+    <tr><td>Displacement</td><td>&Delta;<span class="v">d</span></td><td>Vector</td><td>Yes</td></tr>
+    <tr><td>Distance</td><td>d</td><td>Scalar</td><td>No</td></tr>
+  </table>
+  <p>The arrow over the letter means &ldquo;this one has a direction.&rdquo; Displacement is found like this:</p>
+  <p class="formula">&Delta;<span class="v">d</span> = <span class="v">d</span><sub>f</sub> &minus; <span class="v">d</span><sub>i</sub></p>
+  <p>Final position minus initial position. The &Delta; means &ldquo;change in,&rdquo; and f and i mean final and initial. Play with the run below. Change the numbers and watch how the distance and the displacement behave.</p>
+  <div class="widget" data-widget="trip"></div>
+  <div class="watch callout"><span class="callout-title">Watch out</span>
+    <p>Distance can never be smaller than the size of the displacement. If you run out and back to the same spot, the distance is large but the displacement is <b>zero</b>. A full lap of a track is the classic case.</p></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s3" data-track><div class="wrap">
+  <h2><span class="n">3</span>Speed and velocity</h2>
+  <div class="plain callout"><span class="callout-title">In plain words</span>
+    <p><b>Speed</b> is how fast you are going: the odometer divided by the clock. <b>Velocity</b> is how fast <i>and which way</i>: it uses displacement, not distance.</p></div>
+  <table>
+    <tr><th>In words</th><th>Equation</th><th>Units</th><th>Type</th></tr>
+    <tr><td>average speed = distance &divide; time</td><td>v<sub>av</sub> = d &divide; &Delta;t</td><td>m/s</td><td>Scalar</td></tr>
+    <tr><td>average velocity = displacement &divide; time</td><td><span class="v">v</span><sub>av</sub> = &Delta;<span class="v">d</span> &divide; &Delta;t</td><td>m/s [direction]</td><td>Vector</td></tr>
+  </table>
+  <p>&Delta;t is the time that passed: final time minus initial time.</p>
+  <div class="widget" data-widget="rearr" data-title="Start from" data-start="v = d &divide; &Delta;t"
+    data-forms='{"Find d":["d = v &times; &Delta;t","Multiply both sides by &Delta;t."],"Find &Delta;t":["&Delta;t = d &divide; v","Multiply both sides by &Delta;t, then divide both sides by v."],"Find v":["v = d &divide; &Delta;t","Already done."]}'></div>
+
+  <div class="we"><p class="we-title">Worked example 1: the winger runs 30 m [E], then 18 m [W], in 8.0 s. Find her distance, displacement, average speed and average velocity.</p>
+    <div class="given">Given: 30 m [E] then 18 m [W]; &Delta;t = 8.0 s. Take <b>east as positive</b>.</div>
+    <div class="reveal">
+      <div class="rs"><b>Step 1. Sketch it.</b> Draw a line. Start at 0, arrow 30 m to the east, then 18 m back west.<div class="why">A quick sketch stops sign mistakes before they start.</div></div>
+      <div class="rs"><b>Step 2. Distance</b> adds up every bit of path, no direction: 30 + 18 = <b>48 m</b>.</div>
+      <div class="rs"><b>Step 3. Displacement</b> is final minus initial. She ends at +30 &minus; 18 = +12, and started at 0. &Delta;<span class="v">d</span> = 12 &minus; 0 = <b>12 m [E]</b>.</div>
+      <div class="rs"><b>Step 4. Average speed</b> uses distance: 48 m &divide; 8.0 s = <b>6.0 m/s</b>.</div>
+      <div class="rs"><b>Step 5. Average velocity</b> uses displacement: 12 m [E] &divide; 8.0 s = <b>1.5 m/s [E]</b>.<div class="why">Two numbers for the same run, and both are correct. Speed answers &ldquo;how busy was she?&rdquo; Velocity answers &ldquo;how fast did her position change?&rdquo;</div></div>
+      <div class="rs"><b>Step 6. Sense check.</b> The speed is bigger than the velocity, which is always true when there is a turn-around. Units are m/s. Digits: 8.0 has 2, so each answer has 2. &#10003;</div>
+    </div></div>
+
+  <div class="we"><p class="we-title">Worked example 2: a jogger holds 2.5 m/s for 12 minutes. How far does she go?</p>
+    <div class="given">Given: v = 2.5 m/s; &Delta;t = 12 min. Find: d.</div>
+    <div class="reveal">
+      <div class="rs"><b>Step 1. Match the units.</b> The speed is in m/s, so the time must be in seconds: 12 min &times; 60 = 720 s.</div>
+      <div class="rs"><b>Step 2. Pick the equation.</b> We want distance, so rearrange v = d &divide; &Delta;t to d = v &times; &Delta;t.</div>
+      <div class="rs"><b>Step 3. Calculate.</b> d = 2.5 m/s &times; 720 s = 1800 m.</div>
+      <div class="rs"><b>Step 4. Round.</b> 2.5 has 2 digits and 12 has 2, so the answer gets 2: <b>1.8&times;10<sup>3</sup> m</b> (or 1.8 km). The unit check: (m/s) &times; s = m. &#10003;</div>
+    </div></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s4" data-track><div class="wrap">
+  <h2><span class="n">4</span>Directions and signs</h2>
+  <p>Directions are written in square brackets after the number: <b>[N]</b> north, <b>[S]</b> south, <b>[E]</b> east, <b>[W]</b> west, <b>[U]</b> up, <b>[D]</b> down, <b>[L]</b> left, <b>[R]</b> right, <b>[f]</b> forward, <b>[b]</b> backward. Angles like [N 30&deg; W] come later, in the lesson on 2-D vectors.</p>
+  <div class="plain callout"><span class="callout-title">In plain words</span>
+    <p>In a straight-line problem, pick one direction to be <b>positive</b>. The opposite direction is then <b>negative</b>. A negative answer is not &ldquo;wrong.&rdquo; It just means &ldquo;the other way.&rdquo;</p></div>
+  <p>The same position can be written two ways: 15 m [W] = &minus;15 m [E]. In the first version west is the positive direction. In the second, east is.</p>
+
+  <div class="we"><p class="we-title">Worked example 3: a ball starts 8 m [E] of the penalty spot and is kicked to a spot 5 m [W] of the penalty spot. Find its displacement.</p>
+    <div class="given">Take <b>east as positive</b>. Initial position: +8 m. Final position: &minus;5 m.</div>
+    <div class="reveal">
+      <div class="rs"><b>Step 1. Sketch it.</b> Draw the spot as 0. Put the start at +8 on the east side and the finish at &minus;5 on the west side.</div>
+      <div class="rs"><b>Step 2. Use the equation.</b> &Delta;<span class="v">d</span> = <span class="v">d</span><sub>f</sub> &minus; <span class="v">d</span><sub>i</sub> = (&minus;5) &minus; (+8) = &minus;13 m.</div>
+      <div class="rs"><b>Step 3. Say what the sign means.</b> East was positive, so &minus;13 m means 13 m to the west: <b>13 m [W]</b>.<div class="why">A common slip is 8 &minus; 5 = 3. That would only work if both positions were on the same side of the spot.</div></div>
+      <div class="rs"><b>Step 4. Sense check.</b> The ball crossed the spot, so it travelled 8 m to reach it and then 5 m beyond. 8 + 5 = 13. &#10003;</div>
+    </div></div>
+  <div class="watch callout"><span class="callout-title">Watch out</span>
+    <p>Always subtract <b>final minus initial</b>, and keep the signs. When the start and the finish are on opposite sides of the zero point, the sizes <i>add</i>.</p></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s5" data-track><div class="wrap">
+  <h2><span class="n">5</span>Knowledge check</h2>
+  <p>Eleven questions with instant feedback. Wrong answers explain what went wrong. The number questions give you new numbers each time you press <b>Try new numbers</b>. Sketch the situation on paper before you answer, even if you feel you do not need to.</p>
+  <div id="q1"></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s6" data-track><div class="wrap">
+  <h2><span class="n">6</span>In the real world, and hands-on</h2>
+  <p><b>Maps and GPS.</b> Your phone says the drive to a friend&rsquo;s house is 5.2 km, but the straight line on the map is about 3.1 km. The 5.2 km is a <i>distance</i> (the path). The 3.1 km, with its direction, is the <i>displacement</i>.</p>
+  <p><b>Skating in Ottawa.</b> The Rideau Canal Skateway is roughly 7.8 km long. Skate from one end to the other and back, and you have covered about 15.6 km, yet your displacement is zero and so is your average velocity. Your fitness watch counts distance. A map only shows your displacement.</p>
+  <div class="hands callout"><span class="callout-title">Try it with a ball and cones: walk it and measure it</span>
+    <ol>
+      <li>Put a cone at a start spot. Place a second cone 10 m away to the east (or any direction you pick) and a third cone 4 m back toward the start.</li>
+      <li>Start the stopwatch, walk from the start to the far cone, then back to the third cone, and stop the watch.</li>
+      <li>Write down the distance, the displacement (with a direction and a sign convention), the time, the average speed and the average velocity.</li>
+      <li>Draw it as an arrow diagram. Which one is bigger, your speed or the size of your velocity? Why?</li>
+      <li>Try it again in a way that makes the displacement zero. What is your average velocity now?</li>
+    </ol></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s7" data-track><div class="wrap">
+  <h2><span class="n">7</span>Do this in Google Classroom, and short videos</h2>
+  <p>Open <b>Unit 1: Kinematics &rarr; Scalars and Vectors</b>. That item holds the notes and practice for this lesson. Work through it in this order:</p>
+  <ul>
+    <li><b>The Scalars and Vectors notes:</b> look at the examples (the cat and the doghouse, the hunter) and try them before reading the answers.</li>
+    <li><b>Displacement, Speed, and Velocity worksheet:</b> do questions 1 to 10 first (symbols, scalar vs vector, the equations). Then 11 to 15 (whale, bike ride, rabbit table).</li>
+    <li><b>Vector Diagram Practice:</b> do parts 1 and 2 (drawing and measuring vectors). Leave part 3 (adding vectors tip to tail) until the lesson on 2-D vectors.</li>
+  </ul>
+  <p>For every question, say out loud first: <i>scalar or vector? what am I finding? which equation?</i> Then solve.</p>
+  <h3>Short videos (check them first)</h3>
+  <div class="vid callout">
+    <p><a href="https://physicsclassroom.com/concept-builder/1d-kinematics/distance-vs-displacement/video">The Physics Classroom: Distance vs. Displacement</a></p>
+    <p><a href="https://www.physicsclassroom.com/video-tutorial/1d-kinematics/speed-vs-velocity">The Physics Classroom: Speed vs. Velocity</a></p>
+    <p>I could not watch these myself, so give each a minute or two to see whether the style works for you. Notation may differ slightly from your teacher&rsquo;s (for example, the arrows and brackets). If it does, trust your class sheets.</p>
+  </div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+
+<section class="play" id="s8" data-track><div class="wrap">
+  <h2><span class="n">8</span>How did that go?</h2>
+  <p>Rate yourself honestly. These ratings are for planning the next step, not for marks.</p>
+  <ul class="can">
+    <li data-id="c1">I can explain the difference between a scalar and a vector, and give an example of each.</li>
+    <li data-id="c2">I can find displacement as final position minus initial position, and say what the sign means.</li>
+    <li data-id="c3">I can find the distance and the displacement for a trip that turns around.</li>
+    <li data-id="c4">I can calculate average speed and average velocity, and explain why they can differ.</li>
+    <li data-id="c5">I can rearrange v = d &divide; &Delta;t to find distance or time, with the right units.</li>
+    <li data-id="c6">I can write 15 m [W] as a negative position using east as the positive direction.</li>
+  </ul>
+  <h3>Your results</h3>
+  <div id="results" class="results"></div>
+  <button class="done-btn" type="button">I finished this part</button>
+</div></section>
+</main>
+<footer><div class="wrap"><p>These lessons support, and do not replace, the material from your teacher. Next: Lesson 2, position-time graphs.</p></div></footer>
+
+
+
+<script>
+window.LESSON_INIT=function(SPH){
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function rndI(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function g(x,n){return Number(x.toPrecision(n));}
+SPH.quiz('q1',[
+ {id:'b1',type:'sort',tag:'quantities',
+  prompt:'Sort each statement by the quantity it describes.',
+  cats:['Distance','Displacement','Speed','Velocity','Position'],
+  items:[
+   ['The striker sprinted at 8 m/s.',2,'A rate with no direction is a speed.'],
+   ['The corner flag is 50 m [NE] of the goal.',4,'A location measured from a reference point (the goal), with a direction, is a position.'],
+   ['The ball travelled 31 m through the air.',0,'Path length with no direction is a distance.'],
+   ['She ended up 12 m [W] of where she started.',1,'A change in position, with a direction, is a displacement.'],
+   ['The bus was moving at 60 km/h [S].',3,'A rate with a direction is a velocity.'],
+   ['The odometer reads 18.5 km after the trip.',0,'An odometer adds up path length, so it measures distance.']
+  ]},
+ {id:'b2',type:'mc',tag:'distance vs displacement',
+  prompt:'A player runs one full lap of a 400 m track in 80 s. What is her average velocity?',
+  hint:'Where does she finish compared with where she started?',
+  options:[
+   ['5 m/s','That is 400 m &divide; 80 s, her average <i>speed</i>. Velocity uses displacement, not distance.',false],
+   ['0 m/s','She finishes where she started, so her displacement is zero. Zero divided by 80 s is zero.',true],
+   ['400 m/s','That is the distance with no division by time at all, and the unit would not be m/s anyway.',false],
+   ['It cannot be found without a direction','Direction is not needed here. A displacement of zero has no direction, so the velocity is zero.',false]
+  ]},
+ {id:'b3',type:'mc',tag:'concepts',
+  prompt:'Which ONE of these statements is true?',
+  hint:'Think about two players who both start at A and finish at B but run different routes.',
+  options:[
+   ['Two players can have the same displacement but run different distances.','Yes: same start and finish means the same displacement, even if one took a longer route.',true],
+   ['A displacement can be bigger than the distance travelled.','The straight-line arrow is the shortest path, so the distance is always at least as big as the size of the displacement.',false],
+   ['Average speed can be negative.','Speed is a scalar built from distance, which cannot be negative. Only velocity (a vector) can be negative.',false],
+   ['Average velocity is always equal to average speed.','They are equal only when the motion goes in a straight line without turning around.',false]
+  ]},
+ {id:'b4',type:'num',tag:'displacement and signs',
+  hints:['Final position minus initial position. Watch the signs: west is negative when east is positive.','They are on opposite sides of the marker, so the sizes add.'],
+  gen:function(){var a=rndI(5,20),b=rndI(3,15);
+   return {prompt:'Take <b>east as positive</b>. A ball starts <b>'+a+' m [E]</b> of a marker and ends <b>'+b+' m [W]</b> of it. What is its displacement? Enter a negative number if it is west.',unit:'m',ans:-(a+b),abs:0.05,
+    traps:[{v:(a+b),msg:'The size is right, but the sign is not. The ball ended up west of where it started, and west is negative here.'},{v:-(a-b),msg:'You subtracted the sizes. The start and finish are on opposite sides of the marker, so the sizes add.'},{v:(a-b),msg:'You subtracted the sizes. The start and finish are on opposite sides of the marker, so the sizes add.'}],
+    steps:'<p>&Delta;d = d<sub>f</sub> &minus; d<sub>i</sub> = (&minus;'+b+') &minus; (+'+a+') = <b>&minus;'+(a+b)+' m</b>, which means '+(a+b)+' m [W].</p>'};}},
+ {id:'b5',type:'num',tag:'average speed',
+  hints:['Speed uses the total distance covered, with no direction.','Add the two legs, then divide by the time.'],
+  gen:function(){var x=pick([30,40,50]),y=pick([10,15,20]),t=pick([8.0,10.0,12.0]);
+   return {prompt:'A winger runs <b>'+x+' m [E]</b>, then <b>'+y+' m [W]</b>, in <b>'+t.toFixed(1)+' s</b>. What is her average <i>speed</i>?',unit:'m/s',ans:(x+y)/t,tol:0.01,
+    traps:[{v:(x-y)/t,msg:'That is the size of the average <i>velocity</i> (displacement &divide; time). Speed uses the total distance, so add the legs.'}],
+    steps:'<p>distance = '+x+' + '+y+' = '+(x+y)+' m</p><p>v<sub>av</sub> = '+(x+y)+' &divide; '+t.toFixed(1)+' = <b>'+g((x+y)/t,3)+' m/s</b></p>'};}},
+ {id:'b6',type:'num',tag:'average velocity',
+  hints:['Velocity uses displacement. Take east as positive and find the final position first.','Displacement = first leg minus second leg. Then divide by the time.'],
+  gen:function(){var x=pick([30,40,50]),y=pick([10,15,20]),t=pick([8.0,10.0,12.0]);
+   return {prompt:'A winger runs <b>'+x+' m [E]</b>, then <b>'+y+' m [W]</b>, in <b>'+t.toFixed(1)+' s</b>. Take east as positive. What is her average <i>velocity</i>?',unit:'m/s',ans:(x-y)/t,tol:0.01,
+    traps:[{v:(x+y)/t,msg:'That is the average <i>speed</i>. Velocity uses displacement, which is how far she ended up from the start.'},{v:-(x-y)/t,msg:'The size is right, but she finished east of where she started, so the sign is positive.'}],
+    steps:'<p>displacement = '+x+' &minus; '+y+' = '+(x-y)+' m [E]</p><p>v<sub>av</sub> = '+(x-y)+' &divide; '+t.toFixed(1)+' = <b>'+g((x-y)/t,3)+' m/s [E]</b></p>'};}},
+ {id:'b7',type:'num',tag:'rearranging v = d/t',
+  hints:['Rearrange v = d &divide; &Delta;t to get &Delta;t.','&Delta;t = d &divide; v.'],
+  gen:function(){var d=pick([30,45,60]),v=pick([15,20,25]);
+   return {prompt:'A goal kick sends the ball <b>'+d+' m</b> at an average speed of <b>'+v+' m/s</b>. How long is the ball in the air?',unit:'s',ans:d/v,tol:0.01,
+    traps:[{v:v/d,msg:'That is v &divide; d, upside down. &Delta;t = d &divide; v. Check the units: m &divide; (m/s) = s.'},{v:d*v,msg:'You multiplied. To find time, divide distance by speed.'}],
+    steps:'<p>&Delta;t = d &divide; v = '+d+' &divide; '+v+' = <b>'+g(d/v,3)+' s</b></p>'};}},
+ {id:'b8',type:'num',tag:'units and rearranging',
+  hints:['The speed is in m/s, so the time has to be in seconds before you multiply.','Convert minutes to seconds first, then use d = v &times; &Delta;t.'],
+  gen:function(){var v=pick([2.5,3.0,3.5,4.0]),m=pick([5,10,12,15]);
+   return {prompt:'A player jogs at <b>'+v.toFixed(1)+' m/s</b> for <b>'+m+' minutes</b>. How far does she go?',unit:'m',ans:v*m*60,tol:0.01,
+    traps:[{v:v*m,msg:'You used the minutes directly. Convert minutes to seconds first (&times; 60), because the speed is in metres per <i>second</i>.'}],
+    steps:'<p>'+m+' min &times; 60 = '+(m*60)+' s</p><p>d = v &times; &Delta;t = '+v.toFixed(1)+' &times; '+(m*60)+' = <b>'+g(v*m*60,3)+' m</b></p>'};}},
+ {id:'b9',type:'mc',tag:'directions and signs',
+  prompt:'Write a position of 15 m [W] using east as the positive direction.',
+  hint:'West is the opposite of east.',
+  options:[
+   ['15 m [E]','That points the other way. 15 m [E] is on the east side, but the object is on the west side.',false],
+   ['&minus;15 m [E]','Yes. The object is on the west side, and a negative position in the east direction means west.',true],
+   ['&minus;15 m [W]','A double negative. If the direction is [W] and the sign is negative, that would mean east.',false],
+   ['15 m [N]','Nothing in the question points north.',false]
+  ]},
+ {id:'b10',type:'mc',tag:'scalar vs vector',
+  prompt:'Which of these can have a negative value: speed, velocity, both, or neither?',
+  hint:'Which one has a direction?',
+  options:[
+   ['Speed only','Speed is a scalar built from distance. It has no direction, so it cannot be negative.',false],
+   ['Velocity only','Yes. A negative velocity means &ldquo;in the direction opposite to the one chosen as positive.&rdquo;',true],
+   ['Both','Speed is a scalar, so it cannot be negative.',false],
+   ['Neither','Velocity is a vector and can be negative when it points opposite to the positive direction.',false]
+  ]},
+ {id:'b11',type:'mc',tag:'real world',
+  prompt:'Your phone says a drive is 5.2 km, and the straight line to the destination is about 3.1 km north-east. Which number is the size of the displacement?',
+  options:[
+   ['5.2 km','That is the path length (distance), what the car&rsquo;s odometer would add up.',false],
+   ['3.1 km','Yes. Displacement is the straight line from start to finish. Its direction is [NE].',true],
+   ['8.3 km','Adding the two has no physical meaning here.',false],
+   ['2.1 km','The difference of the two does not describe either quantity.',false]
+  ]}
+]);
+};
+
+(function(){
+'use strict';
+var LID=document.body.getAttribute('data-lesson')||'x';
+var LTITLE=document.body.getAttribute('data-title')||document.title;
+var KEY='sph3u-kin-'+LID;
+var S={q:{},c:{},d:{}};
+try{var raw=window.localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);S.q=o.q||{};S.c=o.c||{};S.d=o.d||{};}}catch(e){}
+function save(){try{window.localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+var REG=[];
+
+function h(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function rnd(a,b,dp){var p=Math.pow(10,dp||0);return Math.round((a+Math.random()*(b-a))*p)/p;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function fmtSd(x,n){var s=x.toPrecision(n);if(/e/i.test(s)){var p=s.split(/e/i);return p[0]+'&times;10<sup>'+parseInt(p[1],10)+'</sup>';}return s;}
+function parseNum(s){
+  s=String(s).trim().replace(/[−–—]/g,'-').replace(/\s+/g,'').replace(/,/g,'.');
+  s=s.replace(/[x×]10\^?\(?([+-]?\d+)\)?$/i,'e$1');
+  if(s===''||!/^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(s))return NaN;
+  return Number(s);
+}
+function sigMask(str){
+  var s=String(str).trim().replace(/[−–]/g,'-').replace(/^[+-]/,'').replace(/,/g,'.');
+  var parts=s.split(/e|×|x/i);var mant=parts[0];
+  if(!/^\d*\.?\d*$/.test(mant)||!/\d/.test(mant))return null;
+  var chars=mant.split('');var hasDot=mant.indexOf('.')>=0;
+  var first=-1,last=-1,i;
+  for(i=0;i<chars.length;i++){if(/[1-9]/.test(chars[i])){first=i;break;}}
+  if(first<0){return chars.map(function(c){return {ch:c,sig:false};});}
+  if(hasDot){for(i=chars.length-1;i>=0;i--){if(/\d/.test(chars[i])){last=i;break;}}}
+  else{for(i=chars.length-1;i>=0;i--){if(/[1-9]/.test(chars[i])){last=i;break;}}}
+  var amb=(!hasDot&&/0$/.test(mant));
+  var m=chars.map(function(c,idx){return {ch:c,sig:(/\d/.test(c)&&idx>=first&&idx<=last)};});
+  m.ambiguous=amb;return m;
+}
+function sigCount(str){var m=sigMask(str);if(!m)return NaN;return m.filter(function(x){return x.sig;}).length;}
+window.SPH={sigCount:sigCount,sigMask:sigMask,fmtSd:fmtSd};
+
+/* ---------- stats ---------- */
+function rec(q,ok){
+  var s=S.q[q.id]||(S.q[q.id]={tries:0,first:false,done:false,tag:q.tag||''});
+  if(s.done)return s;
+  s.tries++;if(ok){s.done=true;s.first=(s.tries===1);}
+  save();updateResults();return s;
+}
+
+/* ---------- question types ---------- */
+function mkFb(){var f=h('div','fb');f.setAttribute('role','status');f.setAttribute('aria-live','polite');return f;}
+
+function renderMC(card,q){
+  card.appendChild(h('div','qtext',q.prompt));
+  var list=h('div','opts');var fb=mkFb();
+  q.options.forEach(function(o){
+    var b=h('button','opt',o[0]);b.type='button';
+    b.addEventListener('click',function(){
+      var st=S.q[q.id];
+      if(!(st&&st.done))rec(q,!!o[2]);
+      b.classList.add(o[2]?'right':'wrong');
+      fb.className='fb '+(o[2]?'ok':'no');
+      fb.innerHTML='<p><b>'+(o[2]?'Yes.':'Not quite.')+'</b> '+o[1]+'</p>';
+      if(o[2])card.classList.add('solved');
+    });
+    list.appendChild(b);
+  });
+  card.appendChild(list);
+  if(q.hint){
+    var row=h('div','row');var hb=h('button','','Hint');hb.type='button';
+    hb.addEventListener('click',function(){fb.className='fb hint';fb.innerHTML='<p><b>Hint:</b> '+q.hint+'</p>';});
+    row.appendChild(hb);card.appendChild(row);
+  }
+  card.appendChild(fb);
+}
+
+function renderNum(card,q){
+  var inst,hintIdx=0,wrongCount=0;
+  var promptEl=h('div','qtext','');card.appendChild(promptEl);
+  var row=h('div','row');
+  var inp=h('input');inp.type='text';inp.setAttribute('inputmode','decimal');inp.setAttribute('autocomplete','off');inp.setAttribute('aria-label','Your answer');
+  var unit=h('span','','');
+  var chk=h('button','primary','Check');chk.type='button';
+  row.appendChild(inp);row.appendChild(unit);row.appendChild(chk);card.appendChild(row);
+  var row2=h('div','row');var hintB=null;
+  if(q.hints&&q.hints.length){hintB=h('button','','Hint');hintB.type='button';row2.appendChild(hintB);}
+  var newB=h('button','','Try new numbers');newB.type='button';
+  if(q.random!==false)row2.appendChild(newB);
+  card.appendChild(row2);
+  var fb=mkFb();card.appendChild(fb);
+  var stepsB=h('button','','Show the steps');stepsB.type='button';stepsB.style.display='none';
+  var stepsEl=h('div','steps');stepsEl.style.display='none';
+  card.appendChild(stepsB);card.appendChild(stepsEl);
+  function load(){
+    inst=q.gen();promptEl.innerHTML=inst.prompt;unit.innerHTML=inst.unit||'';
+    inp.value='';fb.className='fb';fb.innerHTML='';hintIdx=0;wrongCount=0;
+    stepsEl.style.display='none';stepsEl.innerHTML='';stepsB.style.display='none';
+    inp.disabled=false;
+  }
+  function close(a,b){var t=(inst.abs!=null)?inst.abs:Math.abs(b)*(inst.tol||0.02);return Math.abs(a-b)<=t;}
+  function check(){
+    var v=parseNum(inp.value);
+    if(isNaN(v)){fb.className='fb no';fb.innerHTML='<p>Type a number (for example 12.5 or -3.2). Leave the units off, they are shown beside the box.</p>';return;}
+    var ok=close(v,inst.ans),msg='';
+    if(ok&&inst.sd){
+      var sc=sigCount(inp.value);
+      if(sc!==inst.sd){ok=false;msg='Your value is right, but the answer needs <b>'+inst.sd+' significant digits</b> and you gave '+sc+'. Round (or add a zero) to fix that.';}
+    }
+    var st=S.q[q.id];var counted=!(st&&st.done);
+    if(ok){
+      if(counted)rec(q,true);
+      card.classList.add('solved');
+      fb.className='fb ok';fb.innerHTML='<p><b>Yes.</b> '+(inst.okmsg||'That matches.')+'</p>';
+      stepsB.style.display='';stepsB.textContent='Show the steps';
+    }else{
+      if(counted)rec(q,false);
+      wrongCount++;
+      if(!msg&&inst.traps){inst.traps.forEach(function(t){if(!msg&&close(v,t.v))msg=t.msg;});}
+      if(!msg)msg='That is not the value I get. Check the units and the signs, then try again. Use the hint if you are stuck.';
+      fb.className='fb no';fb.innerHTML='<p><b>Not quite.</b> '+msg+'</p>';
+      stepsB.style.display='';stepsB.textContent='Show the steps';
+    }
+  }
+  chk.addEventListener('click',check);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  if(hintB)hintB.addEventListener('click',function(){
+    var hs=q.hints;var t=hs[Math.min(hintIdx,hs.length-1)];hintIdx++;
+    fb.className='fb hint';fb.innerHTML='<p><b>Hint '+Math.min(hintIdx,hs.length)+' of '+hs.length+':</b> '+t+'</p>';
+  });
+  newB.addEventListener('click',load);
+  stepsB.addEventListener('click',function(){
+    if(stepsEl.style.display==='none'){stepsEl.innerHTML=inst.steps||'';stepsEl.style.display='block';stepsB.textContent='Hide the steps';}
+    else{stepsEl.style.display='none';stepsB.textContent='Show the steps';}
+  });
+  load();
+}
+
+function renderSort(card,q){
+  card.appendChild(h('div','qtext',q.prompt));
+  var rows=[];var box=h('div');
+  q.items.forEach(function(it){
+    var r=h('div','sortrow');r.appendChild(h('div','',it[0]));
+    var sel=h('select');sel.setAttribute('aria-label',it[0]);
+    var o0=h('option','','Choose...');o0.value='-1';sel.appendChild(o0);
+    q.cats.forEach(function(c,i){var o=h('option','',c);o.value=String(i);sel.appendChild(o);});
+    r.appendChild(sel);var sfb=h('div','sfb','');r.appendChild(sfb);box.appendChild(r);rows.push({r:r,sel:sel,sfb:sfb,it:it});
+  });
+  card.appendChild(box);
+  var row=h('div','row');var chk=h('button','primary','Check my answers');chk.type='button';row.appendChild(chk);card.appendChild(row);
+  var fb=mkFb();card.appendChild(fb);
+  chk.addEventListener('click',function(){
+    var all=true,missing=false;
+    rows.forEach(function(x){
+      var v=parseInt(x.sel.value,10);
+      if(v<0){missing=true;}
+      var ok=(v===x.it[1]);if(!ok)all=false;
+      x.r.className='sortrow '+(v<0?'':(ok?'good':'bad'));
+      x.sfb.innerHTML=v<0?'':(ok?('Right. '+x.it[2]):('Not this one. '+x.it[2]));
+    });
+    if(missing){fb.className='fb no';fb.innerHTML='<p>Choose a category for every row, then check again.</p>';return;}
+    var st=S.q[q.id];if(!(st&&st.done))rec(q,all);
+    if(all){card.classList.add('solved');fb.className='fb ok';fb.innerHTML='<p><b>All correct.</b></p>';}
+    else{fb.className='fb no';fb.innerHTML='<p><b>Some are off.</b> Read the note under each red row, change them, and check again.</p>';}
+  });
+}
+
+function quiz(id,qs){
+  var box=document.getElementById(id);if(!box)return;
+  qs.forEach(function(q,i){
+    REG.push({id:q.id,tag:q.tag||'',n:i+1,box:id});
+    var card=h('div','qcard');
+    var head=h('div','qhead','<span>Question '+(i+1)+' of '+qs.length+'</span><span>'+(q.tag||'')+'</span>');
+    card.appendChild(head);
+    if(q.type==='mc')renderMC(card,q);else if(q.type==='num')renderNum(card,q);else if(q.type==='sort')renderSort(card,q);
+    box.appendChild(card);
+  });
+  updateResults();
+}
+window.SPH.quiz=quiz;
+
+/* ---------- reveal steps ---------- */
+function setupReveal(){
+  var items=document.querySelectorAll('.reveal');
+  Array.prototype.forEach.call(items,function(rv){
+    var steps=rv.querySelectorAll('.rs');var shown=0;
+    var row=h('div','row');
+    var nb=h('button','primary','');nb.type='button';
+    var ab=h('button','','Show all steps');ab.type='button';
+    function upd(){
+      if(shown>=steps.length){row.style.display='none';return;}
+      nb.textContent=shown===0?'Try it first, then show step 1':'Show step '+(shown+1)+' of '+steps.length;
+    }
+    nb.addEventListener('click',function(){steps[shown].classList.add('show');shown++;upd();});
+    ab.addEventListener('click',function(){Array.prototype.forEach.call(steps,function(s){s.classList.add('show');});shown=steps.length;upd();});
+    row.appendChild(nb);row.appendChild(ab);rv.appendChild(row);upd();
+  });
+}
+
+/* ---------- widgets ---------- */
+function widgetSigs(el){
+  el.innerHTML='<label>Type any number: <input type="text" value="0.00450" aria-label="A number" autocomplete="off"></label><div class="out" aria-live="polite"></div>';
+  var inp=el.querySelector('input'),out=el.querySelector('.out');
+  function upd(){
+    var m=sigMask(inp.value);
+    if(!m){out.innerHTML='<p>Type a plain number such as 0.0450, 3.00, 1500 or 1500.</p>';return;}
+    var n=m.filter(function(x){return x.sig;}).length;
+    var html=m.map(function(x){return '<span class="dg '+(x.sig?'sig':'no')+'">'+x.ch+'</span>';}).join('');
+    out.innerHTML='<div>'+html+'</div><p><b>'+n+' significant digit'+(n===1?'':'s')+'.</b> Green digits count. Grey digits are only holding the decimal place.'+(m.ambiguous?' <br>The zeros at the end of a whole number are unclear. Writing it in scientific notation (for example 1.5&times;10<sup>3</sup>) shows exactly how many count.':'')+'</p>';
+  }
+  inp.addEventListener('input',upd);upd();
+}
+function widgetKmh(el){
+  el.innerHTML='<div class="row"><label>Speed: <input type="text" value="54" inputmode="decimal" aria-label="Speed value"></label><label><select aria-label="Direction of conversion"><option value="a">km/h to m/s</option><option value="b">m/s to km/h</option></select></label></div><div class="out" aria-live="polite"></div>';
+  var inp=el.querySelector('input'),sel=el.querySelector('select'),out=el.querySelector('.out');
+  function upd(){
+    var v=parseNum(inp.value);if(isNaN(v)){out.innerHTML='<p>Type a number.</p>';return;}
+    if(sel.value==='a'){
+      var r=v*1000/3600;
+      out.innerHTML='<p>'+v+' km/h &times; <span class="nowrap">(1000 m &divide; 1 km)</span> &times; <span class="nowrap">(1 h &divide; 3600 s)</span> = <b>'+Number(r.toPrecision(4))+' m/s</b></p><p>Shortcut: divide by 3.6. The number gets smaller.</p>';
+    }else{
+      var r2=v*3600/1000;
+      out.innerHTML='<p>'+v+' m/s &times; <span class="nowrap">(1 km &divide; 1000 m)</span> &times; <span class="nowrap">(3600 s &divide; 1 h)</span> = <b>'+Number(r2.toPrecision(4))+' km/h</b></p><p>Shortcut: multiply by 3.6. The number gets bigger.</p>';
+    }
+  }
+  inp.addEventListener('input',upd);sel.addEventListener('change',upd);upd();
+}
+function widgetRearr(el){
+  var forms=JSON.parse(el.getAttribute('data-forms'));var title=el.getAttribute('data-title')||'Start from';
+  var start=el.getAttribute('data-start');
+  el.innerHTML='<p><b>'+title+'</b> <span class="formula">'+start+'</span></p><p>What do you need to find?</p><div class="row"></div><div class="out" aria-live="polite"></div>';
+  var row=el.querySelector('.row'),out=el.querySelector('.out');
+  Object.keys(forms).forEach(function(k){
+    var b=h('button','',k);b.type='button';
+    b.addEventListener('click',function(){out.innerHTML='<p><span class="formula">'+forms[k][0]+'</span></p><p>'+forms[k][1]+'</p>';});
+    row.appendChild(b);
+  });
+}
+
+function widgetTrip(el){
+  el.innerHTML='<div class="row"><label>Out, east (m) <input type="text" data-k="o" value="30" inputmode="decimal"></label><label>Back, west (m) <input type="text" data-k="b" value="18" inputmode="decimal"></label><label>Time (s) <input type="text" data-k="t" value="8.0" inputmode="decimal"></label></div><div class="out" aria-live="polite"></div>';
+  var ins=el.querySelectorAll('input'),out=el.querySelector('.out');
+  function upd(){
+    var o=parseNum(ins[0].value),b=parseNum(ins[1].value),t=parseNum(ins[2].value);
+    if(isNaN(o)||isNaN(b)||isNaN(t)||t<=0||o<0||b<0){out.innerHTML='<p>Enter positive numbers for each box.</p>';return;}
+    var dist=o+b,disp=o-b,sp=dist/t,vel=disp/t;
+    var dir=function(x){return x>0?' [E]':(x<0?' [W]':'');};
+    var f=function(x){return Number(Math.abs(x).toPrecision(3));};
+    out.innerHTML='<p>East is positive.</p><div class="stats"><div><span>Distance</span><b>'+f(dist)+' m</b></div><div><span>Average speed</span><b>'+f(sp)+' m/s</b></div><div><span>Displacement</span><b>'+f(disp)+' m'+dir(disp)+'</b></div><div><span>Average velocity</span><b>'+f(vel)+' m/s'+dir(vel)+'</b></div></div><p>'+(disp===0?'You finished where you started, so the displacement and the velocity are zero.':(o>=b?'Distance is larger than the size of the displacement because of the turn-around.':'You ended up west of the start, so the displacement is west.'))+'</p>';
+  }
+  Array.prototype.forEach.call(ins,function(i){i.addEventListener('input',upd);});upd();
+}
+function setupWidgets(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-widget]'),function(el){
+    var w=el.getAttribute('data-widget');
+    if(w==='sigs')widgetSigs(el);else if(w==='kmh')widgetKmh(el);else if(w==='rearr')widgetRearr(el);else if(w==='trip')widgetTrip(el);
+  });
+}
+
+/* ---------- progress strip, sections ---------- */
+var plays=[],ball=null,marks=[],pitchLabel=null;
+function setupProgress(){
+  plays=Array.prototype.slice.call(document.querySelectorAll('.play[data-track]'));
+  var nav=document.getElementById('pitch');if(!nav||!plays.length)return;
+  nav.innerHTML='<div class="wrap"><div class="pitch-track"></div><p class="pitch-label"></p></div>';
+  var track=nav.querySelector('.pitch-track');pitchLabel=nav.querySelector('.pitch-label');
+  plays.forEach(function(p,i){
+    var pos=(i+1)/(plays.length+1)*100;
+    var m=h('button','pitch-mark');m.type='button';m.style.left=pos+'%';
+    var t=p.querySelector('h2');m.setAttribute('aria-label','Go to '+(t?t.textContent:'section '+(i+1)));
+    m.addEventListener('click',function(){p.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+    track.appendChild(m);marks.push(m);
+    var db=p.querySelector('.done-btn');
+    if(db){
+      db.addEventListener('click',function(){
+        S.d[p.id]=!S.d[p.id];save();refreshProgress();
+        if(S.d[p.id]&&plays[i+1]){plays[i+1].scrollIntoView({behavior:'smooth',block:'start'});}
+      });
+    }
+  });
+  ball=h('div','pitch-ball');ball.style.left='3%';track.appendChild(ball);
+  refreshProgress();
+}
+function refreshProgress(){
+  if(!plays.length)return;var done=0;
+  plays.forEach(function(p,i){
+    var d=!!S.d[p.id];if(d)done++;
+    p.classList.toggle('finished',d);marks[i].classList.toggle('on',d);
+    var db=p.querySelector('.done-btn');if(db)db.textContent=d?'Marked as done (tap to undo)':'I finished this part';
+  });
+  var frac=done/plays.length;ball.style.left=(3+frac*94)+'%';
+  pitchLabel.textContent=done+' of '+plays.length+' parts finished';
+}
+
+/* ---------- can-do checklist ---------- */
+function setupCan(){
+  Array.prototype.forEach.call(document.querySelectorAll('.can li'),function(li){
+    var id=li.getAttribute('data-id');
+    var txt=li.innerHTML;li.innerHTML='<span>'+txt+'</span><span class="conf"></span>';
+    var conf=li.querySelector('.conf');
+    [['r','Not yet'],['a','Getting there'],['g','Got it']].forEach(function(o){
+      var b=h('button','',o[1]);b.type='button';b.setAttribute('data-v',o[0]);
+      b.addEventListener('click',function(){S.c[id]=o[0];save();paintCan();updateResults();});
+      conf.appendChild(b);
+    });
+  });
+  paintCan();
+}
+function paintCan(){
+  Array.prototype.forEach.call(document.querySelectorAll('.can li'),function(li){
+    var id=li.getAttribute('data-id');
+    Array.prototype.forEach.call(li.querySelectorAll('.conf button'),function(b){
+      var v=b.getAttribute('data-v');b.className=(S.c[id]===v)?('sel-'+v):'';
+    });
+  });
+}
+
+/* ---------- results ---------- */
+function resultsText(){
+  var total=REG.length,done=0,first=0,look=[];
+  REG.forEach(function(r){var s=S.q[r.id];if(s&&s.done)done++;if(s&&s.first)first++;
+    if(!(s&&s.first))look.push('Q'+r.n+(r.tag?' ('+r.tag+')':'')+(s&&s.done?' - got it after '+s.tries+' tries':' - not finished'));});
+  var cs={r:[],a:[],g:[]};
+  Array.prototype.forEach.call(document.querySelectorAll('.can li'),function(li){var id=li.getAttribute('data-id');var v=S.c[id];if(v)cs[v].push(li.textContent.replace(/Not yetGetting thereGot it/,'').trim());});
+  var d=new Date();
+  var t='SPH3U Kinematics - '+LTITLE+' ('+d.toISOString().slice(0,10)+')\n';
+  t+='Knowledge checks: '+first+' of '+total+' right on the first try; '+done+' of '+total+' finished.\n';
+  t+='Worth another look: '+(look.length?'\n  - '+look.join('\n  - '):'none')+'\n';
+  t+='Confidence: Got it '+cs.g.length+', Getting there '+cs.a.length+', Not yet '+cs.r.length+'\n';
+  if(cs.r.length)t+='Not yet: \n  - '+cs.r.join('\n  - ')+'\n';
+  if(cs.a.length)t+='Getting there: \n  - '+cs.a.join('\n  - ')+'\n';
+  return t;
+}
+function updateResults(){
+  var box=document.getElementById('results');if(!box)return;
+  var total=REG.length,done=0,first=0;
+  REG.forEach(function(r){var s=S.q[r.id];if(s&&s.done)done++;if(s&&s.first)first++;});
+  var sum=box.querySelector('.sum');
+  if(sum)sum.innerHTML='<p><b>'+first+' of '+total+'</b> knowledge-check questions right on the first try. <b>'+done+' of '+total+'</b> finished.</p>';
+}
+function setupResults(){
+  var box=document.getElementById('results');if(!box)return;
+  box.innerHTML='<div class="sum"></div><div class="row"><button class="primary" type="button" id="copyres">Make my results summary</button><button type="button" id="resetles">Start this lesson over</button></div><textarea id="restext" readonly aria-label="Results summary" style="display:none"></textarea><p id="copynote" style="display:none"></p>';
+  var ta=box.querySelector('#restext'),note=box.querySelector('#copynote');
+  box.querySelector('#copyres').addEventListener('click',function(){
+    ta.value=resultsText();ta.style.display='block';ta.focus();ta.select();
+    var ok=false;try{ok=document.execCommand&&document.execCommand('copy');}catch(e){}
+    if(!ok&&navigator.clipboard&&navigator.clipboard.writeText){try{navigator.clipboard.writeText(ta.value);ok=true;}catch(e){}}
+    note.style.display='block';note.textContent=ok?'Copied. Paste it into a message to Mom, or into the chat with Claude.':'Select the text above, copy it, and paste it into a message.';
+  });
+  box.querySelector('#resetles').addEventListener('click',function(){
+    if(window.confirm('Clear your answers and progress for this lesson?')){S={q:{},c:{},d:{}};save();window.location.reload();}
+  });
+  updateResults();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  setupReveal();setupWidgets();setupProgress();setupCan();setupResults();
+  if(window.LESSON_INIT)window.LESSON_INIT(window.SPH);
+  updateResults();
+});
+})();
+
+</script>
+</body>
+</html>
